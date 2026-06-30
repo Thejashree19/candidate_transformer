@@ -4,8 +4,7 @@ Confidence scoring engine for canonical candidate profiles.
 Computes per-field and overall confidence scores based on:
   • Source reliability weights
   • Cross-source agreement
-  • Extraction quality
-  • Field completeness
+  • Normalization success
 
 The scorer mutates a ``CanonicalProfile`` in-place, setting ``overall_confidence``
 and per-skill confidence values, then returns the profile.
@@ -20,6 +19,7 @@ from src.models import (
     CanonicalProfile,
     CanonicalSkill,
     ExtractionMethod,
+    PhoneEntry,
     ProvenanceRecord,
     SourceType,
 )
@@ -117,6 +117,9 @@ class ConfidenceScorer:
         # Per-skill confidence adjustment
         self._score_skills(profile, provenance, source_strs)
 
+        # Store per-field confidence on the profile
+        profile.field_confidence = field_scores
+
         # Overall confidence: weighted average across non-null fields
         profile.overall_confidence = self._compute_overall(profile, field_scores)
 
@@ -135,18 +138,18 @@ class ConfidenceScorer:
     ) -> float:
         """Compute confidence for a single field using the formula:
 
-        ``field_confidence = source_reliability×0.4 + agreement_bonus×0.3
-                            + extraction_quality×0.2 + completeness×0.1``
+        ``field_confidence = source_reliability×0.4 + agreement_bonus×0.35
+                            + normalization_success×0.25``
         """
         # Gather provenance records for this field
         field_records = [p for p in provenance if p.field == field_name]
 
-        # completeness: is the field present and non-empty?
-        completeness = 1.0 if self._field_is_present(profile, field_name) else 0.0
+        # normalization_success: how well did normalization work for this field?
+        normalization_success = self._compute_normalization_success(profile, field_name)
 
         if not field_records:
-            # No provenance → confidence is just completeness contribution
-            return 0.0 * 0.4 + 0.0 * 0.3 + 0.0 * 0.2 + completeness * 0.1
+            # No provenance → confidence is just normalization contribution
+            return 0.0 * 0.4 + 0.0 * 0.35 + normalization_success * 0.25
 
         # source_reliability: weight of the highest-priority source that contributed
         source_reliability = self._best_source_reliability(field_records)
@@ -160,14 +163,10 @@ class ConfidenceScorer:
         else:
             agreement_bonus = 0.0
 
-        # extraction_quality: best extraction method among contributing records
-        extraction_quality = self._best_extraction_quality(field_records)
-
         confidence = (
             source_reliability * 0.4
-            + agreement_bonus * 0.3
-            + extraction_quality * 0.2
-            + completeness * 0.1
+            + agreement_bonus * 0.35
+            + normalization_success * 0.25
         )
         return min(max(confidence, 0.0), 1.0)
 
@@ -220,10 +219,18 @@ class ConfidenceScorer:
         total_weight = 0.0
         weighted_sum = 0.0
 
+        # Include ALL fields (both present and missing) in the weighted average.
+        # Missing required fields contribute 0.0 score, pulling the average down.
+        _REQUIRED_FIELDS = {"full_name", "emails", "phones", "skills", "experience"}
         for field_name, score in field_scores.items():
-            if not self._field_is_present(profile, field_name):
-                continue
             importance = _FIELD_IMPORTANCE.get(field_name, 0.5)
+            if not self._field_is_present(profile, field_name):
+                if field_name in _REQUIRED_FIELDS:
+                    # Missing required field: include with 0.0 score
+                    weighted_sum += 0.0
+                    total_weight += importance
+                # Missing optional fields are still skipped
+                continue
             weighted_sum += score * importance
             total_weight += importance
 
@@ -282,3 +289,24 @@ class ConfidenceScorer:
             if q > best:
                 best = q
         return best
+
+    @staticmethod
+    def _compute_normalization_success(
+        profile: CanonicalProfile, field_name: str,
+    ) -> float:
+        """Score how well normalization succeeded for a field.
+
+        Returns 1.0 for fully normalized, 0.5 for failed, proportional otherwise.
+        """
+        if field_name == "phones":
+            if not profile.phones:
+                return 1.0  # No phones to normalize
+            normalized_count = sum(1 for p in profile.phones if p.normalized is not None)
+            return max(0.5, normalized_count / len(profile.phones))
+        if field_name == "skills":
+            if not profile.skills:
+                return 1.0
+            mapped_count = sum(1 for s in profile.skills if not s.unmapped)
+            return max(0.5, mapped_count / len(profile.skills))
+        # For other fields, assume normalization succeeded if field is present
+        return 1.0

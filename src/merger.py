@@ -25,6 +25,7 @@ from src.models import (
     ExtractionMethod,
     Links,
     Location,
+    PhoneEntry,
     ProvenanceRecord,
     RawCandidate,
     RawEducation,
@@ -38,6 +39,7 @@ from src.normalizers.phone import normalize_phone
 from src.normalizers.date import normalize_date
 from src.normalizers.location import parse_location
 from src.normalizers.skills import canonicalize_skill, load_skill_synonyms
+from rapidfuzz import fuzz
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +51,7 @@ _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 _SOURCE_PRIORITY: dict[SourceType, int] = {
     SourceType.ATS_JSON: 1,
     SourceType.RECRUITER_CSV: 2,
-
+    SourceType.RESUME: 3,
     SourceType.RECRUITER_NOTES: 4,
 }
 
@@ -178,20 +180,21 @@ class CandidateMerger:
         # Build inverted indexes for each match key type
         email_index: dict[str, list[int]] = {}
         name_phone_index: dict[str, list[int]] = {}
-        name_company_index: dict[str, list[int]] = {}
+        
+        name_comp_list: list[tuple[int, str]] = []
 
         for i, c in enumerate(candidates):
             # Primary: email
-            for email in c.emails:
+            for email in getattr(c, "emails", []):
                 key = _normalize_email(email)
                 if key:
                     email_index.setdefault(key, []).append(i)
 
-            norm_name = _normalize_name(c.full_name)
+            norm_name = _normalize_name(getattr(c, "full_name", None))
 
             # Secondary: name + phone
             if norm_name:
-                for phone in c.phones:
+                for phone in getattr(c, "phones", []):
                     pkey = _normalize_phone_key(phone)
                     if pkey:
                         composite = f"{norm_name}||{pkey}"
@@ -199,17 +202,28 @@ class CandidateMerger:
 
             # Secondary: name + company
             if norm_name:
-                comp = _normalize_company(c.current_company)
+                comp = _normalize_company(getattr(c, "current_company", None))
                 if comp:
-                    composite = f"{norm_name}||{comp}"
-                    name_company_index.setdefault(composite, []).append(i)
+                    composite = f"{norm_name} {comp}"
+                    name_comp_list.append((i, composite))
 
         # Union candidates that share any match key
-        for group in (email_index, name_phone_index, name_company_index):
+        for group in (email_index, name_phone_index):
             for indices in group.values():
                 first = indices[0]
                 for idx in indices[1:]:
                     uf.union(first, idx)
+
+        # Fuzzy matching for name+company as last resort
+        for i in range(len(name_comp_list)):
+            for j in range(i + 1, len(name_comp_list)):
+                idx1, str1 = name_comp_list[i]
+                idx2, str2 = name_comp_list[j]
+                if uf.find(idx1) != uf.find(idx2):
+                    if fuzz.token_sort_ratio(str1, str2) >= 90.0:
+                        uf.union(idx1, idx2)
+                        setattr(candidates[idx1], "_low_confidence_match", True)
+                        setattr(candidates[idx2], "_low_confidence_match", True)
 
         # Collect clusters
         clusters_map: dict[int, list[int]] = {}
@@ -225,76 +239,111 @@ class CandidateMerger:
 
     def _merge_cluster(self, cluster: list[RawCandidate]) -> CanonicalProfile:
         """Merge a cluster of candidates into a single ``CanonicalProfile``."""
-        # Sort by source priority so highest-priority comes first
-        cluster_sorted = sorted(cluster, key=lambda c: _SOURCE_PRIORITY.get(c.source_type, 99))
+        is_low_conf = any(getattr(c, "_low_confidence_match", False) for c in cluster)
 
         profile = CanonicalProfile()
+        profile.low_confidence_match = is_low_conf
         provenance: list[ProvenanceRecord] = []
 
-        # --- Scalar fields (highest-priority non-null wins) ---
-        scalar_fields = ["full_name", "headline", "location_raw", "current_company", "current_title"]
-        for field_name in scalar_fields:
-            for c in cluster_sorted:
+        # Helper to score scalar values
+        # priority: 1) corroboration count, 2) source reliability, 3) recency
+        def _resolve_scalar(field_name: str) -> None:
+            val_map: dict[str, list[RawCandidate]] = {}
+            orig_val_map: dict[str, Any] = {}
+            for c in cluster:
                 val = getattr(c, field_name, None)
                 if val is not None and str(val).strip():
-                    if field_name == "location_raw":
-                        # Parse location string into Location object
-                        try:
-                            loc_dict = parse_location(val)
-                            profile.location = Location(
-                                city=loc_dict.get("city"),
-                                region=loc_dict.get("region"),
-                                country=loc_dict.get("country"),
-                            )
-                        except Exception:
-                            profile.location = Location()
-                            logger.debug("Failed to parse location: %s", val)
-                    elif field_name in ("current_company", "current_title"):
-                        # These aren't direct fields on CanonicalProfile;
-                        # they are recorded in provenance and used if headline is absent.
-                        pass
-                    else:
-                        setattr(profile, field_name, val.strip())
+                    norm_val = str(val).strip().lower()
+                    val_map.setdefault(norm_val, []).append(c)
+                    orig_val_map[norm_val] = val
+
+            if not val_map:
+                return
+
+            best_val_norm = None
+            best_score = (-1, -1, "")
+            weight_map = {1: 0.95, 2: 0.85, 3: 0.85, 4: 0.40, 99: 0.0}
+
+            for norm_val, c_list in val_map.items():
+                corrob = len(c_list)
+                best_weight = max(weight_map.get(_SOURCE_PRIORITY.get(c.source_type, 99), 0.0) for c in c_list)
+                best_recency = max((getattr(c, "fetched_at", "")) for c in c_list)
+                
+                score = (corrob, best_weight, best_recency)
+                if score > best_score:
+                    best_score = score
+                    best_val_norm = norm_val
+
+            winning_val = orig_val_map[best_val_norm]
+            if field_name == "location_raw":
+                try:
+                    loc_dict = parse_location(winning_val)
+                    profile.location = Location(
+                        city=loc_dict.get("city"),
+                        region=loc_dict.get("region"),
+                        country=loc_dict.get("country"),
+                    )
+                except Exception:
+                    profile.location = Location()
+            elif field_name in ("current_company", "current_title"):
+                pass
+            else:
+                setattr(profile, field_name, str(winning_val).strip())
+
+            for norm_val, c_list in val_map.items():
+                is_alt = (norm_val != best_val_norm)
+                for c in c_list:
                     provenance.append(ProvenanceRecord(
                         field=field_name,
                         source=c.source_type.value,
                         method=c.extraction_method.value,
+                        value=orig_val_map[norm_val],
+                        is_alternate=is_alt
                     ))
-                    break  # first non-null from highest priority wins
+
+        # --- Scalar fields ---
+        for field_name in ["full_name", "headline", "location_raw", "current_company", "current_title"]:
+            _resolve_scalar(field_name)
 
         # --- Build headline from current_company/current_title if missing ---
         if not profile.headline:
-            for c in cluster_sorted:
-                if c.current_title and c.current_company:
-                    profile.headline = f"{c.current_title.strip()} at {c.current_company.strip()}"
-                    break
-                elif c.current_title:
-                    profile.headline = c.current_title.strip()
-                    break
+            title_vals = [c.current_title for c in cluster if getattr(c, "current_title", None)]
+            comp_vals = [c.current_company for c in cluster if getattr(c, "current_company", None)]
+            if title_vals and comp_vals:
+                profile.headline = f"{title_vals[0].strip()} at {comp_vals[0].strip()}"
+            elif title_vals:
+                profile.headline = title_vals[0].strip()
 
         # --- years_experience: maximum across sources ---
         max_yoe: Optional[float] = None
-        yoe_source: Optional[RawCandidate] = None
-        for c in cluster_sorted:
-            if c.years_experience is not None:
-                if max_yoe is None or c.years_experience > max_yoe:
-                    max_yoe = c.years_experience
-                    yoe_source = c
+        yoe_sources: list[RawCandidate] = []
+        for c in cluster:
+            yoe = getattr(c, "years_experience", None)
+            if yoe is not None:
+                if max_yoe is None or yoe > max_yoe:
+                    max_yoe = yoe
+                    yoe_sources = [c]
+                elif yoe == max_yoe:
+                    yoe_sources.append(c)
+
         if max_yoe is not None:
             profile.years_experience = max_yoe
-            provenance.append(ProvenanceRecord(
-                field="years_experience",
-                source=yoe_source.source_type.value if yoe_source else "unknown",
-                method=yoe_source.extraction_method.value if yoe_source else "unknown",
-            ))
+            for c in yoe_sources:
+                provenance.append(ProvenanceRecord(
+                    field="years_experience",
+                    source=c.source_type.value,
+                    method=c.extraction_method.value,
+                    value=max_yoe,
+                    is_alternate=False
+                ))
 
         # --- Array fields: union / deduplicate ---
 
         # Emails
         seen_emails: set[str] = set()
         merged_emails: list[str] = []
-        for c in cluster_sorted:
-            for email in c.emails:
+        for c in cluster:
+            for email in getattr(c, "emails", []):
                 norm = _normalize_email(email)
                 if not norm or not _EMAIL_RE.match(norm):
                     continue
@@ -305,44 +354,56 @@ class CandidateMerger:
                         field="emails",
                         source=c.source_type.value,
                         method=c.extraction_method.value,
+                        value=email,
+                        is_alternate=False
                     ))
         profile.emails = merged_emails
 
         # Phones (normalized to E.164)
         seen_phones: set[str] = set()
-        merged_phones: list[str] = []
-        for c in cluster_sorted:
-            for phone in c.phones:
+        merged_phones: list[PhoneEntry] = []
+        for c in cluster:
+            for phone in getattr(c, "phones", []):
                 try:
                     normed_result = normalize_phone(phone)
-                    # normalize_phone returns (str|None, float)
                     normed_str = normed_result[0]
+                    conf = normed_result[1]
                 except Exception:
                     normed_str = None
+                    conf = 0.0
+                
                 if not normed_str:
                     continue
+                
                 key = _normalize_phone_key(normed_str)
                 if key and key not in seen_phones:
                     seen_phones.add(key)
-                    merged_phones.append(normed_str)
+                    merged_phones.append(PhoneEntry(
+                        raw=phone,
+                        normalized=normed_str,
+                        confidence=conf if normed_str else 0.5
+                    ))
                     provenance.append(ProvenanceRecord(
                         field="phones",
                         source=c.source_type.value,
                         method=c.extraction_method.value,
+                        value=phone,
+                        is_alternate=False
                     ))
         profile.phones = merged_phones
 
         # Skills (canonicalize, deduplicate by canonical name)
         skill_map: dict[str, CanonicalSkill] = {}
-        for c in cluster_sorted:
-            for raw_skill in c.skills:
-                canonical_name, confidence = self._canonicalize_raw_skill(raw_skill)
+        for c in cluster:
+            for raw_skill in getattr(c, "skills", []):
+                canonical_name, confidence, unmapped = self._canonicalize_raw_skill(raw_skill)
                 existing = skill_map.get(canonical_name)
                 if existing is None:
                     skill_map[canonical_name] = CanonicalSkill(
                         name=canonical_name,
                         confidence=confidence,
                         sources=[c.source_type.value],
+                        unmapped=unmapped
                     )
                 else:
                     # Merge sources list (deduplicated)
@@ -356,14 +417,16 @@ class CandidateMerger:
                     field="skills",
                     source=c.source_type.value,
                     method=raw_skill.method.value,
+                    value=raw_skill.name,
+                    is_alternate=False
                 ))
         profile.skills = list(skill_map.values())
 
         # Experience (deduplicate by company+title+start)
         exp_keys: set[str] = set()
         merged_exp: list[Experience] = []
-        for c in cluster_sorted:
-            for raw_exp in c.experience:
+        for c in cluster:
+            for raw_exp in getattr(c, "experience", []):
                 exp_obj = self._normalize_experience(raw_exp)
                 if exp_obj is None:
                     continue
@@ -375,14 +438,16 @@ class CandidateMerger:
                         field="experience",
                         source=c.source_type.value,
                         method=raw_exp.method.value,
+                        value=exp_obj.model_dump(),
+                        is_alternate=False
                     ))
         profile.experience = merged_exp
 
         # Education (deduplicate by institution+degree)
         edu_keys: set[str] = set()
         merged_edu: list[Education] = []
-        for c in cluster_sorted:
-            for raw_edu in c.education:
+        for c in cluster:
+            for raw_edu in getattr(c, "education", []):
                 edu_obj = self._normalize_education(raw_edu)
                 if edu_obj is None:
                     continue
@@ -394,16 +459,24 @@ class CandidateMerger:
                         field="education",
                         source=c.source_type.value,
                         method=raw_edu.method.value,
+                        value=edu_obj.model_dump(),
+                        is_alternate=False
                     ))
         profile.education = merged_edu
 
         # Links (union)
         links = Links()
         other_links_set: set[str] = set()
-        for c in cluster_sorted:
-            if c.portfolio_url and not links.portfolio:
+        for c in cluster:
+            if getattr(c, "portfolio_url", None) and not links.portfolio:
                 links.portfolio = c.portfolio_url.strip()
-            for link in c.other_links:
+            
+            if getattr(c, "github_url", None):
+                other_links_set.add(c.github_url.strip())
+            if getattr(c, "linkedin_url", None):
+                other_links_set.add(c.linkedin_url.strip())
+
+            for link in getattr(c, "other_links", []):
                 stripped = link.strip()
                 if stripped and stripped not in other_links_set:
                     other_links_set.add(stripped)
@@ -419,15 +492,14 @@ class CandidateMerger:
     # Helpers
     # ------------------------------------------------------------------
 
-    def _canonicalize_raw_skill(self, raw: RawSkill) -> tuple[str, float]:
-        """Return (canonical_name, confidence) for a raw skill."""
+    def _canonicalize_raw_skill(self, raw: RawSkill) -> tuple[str, float, bool]:
+        """Return (canonical_name, confidence, unmapped) for a raw skill."""
         try:
-            # canonicalize_skill returns (name, confidence, method) — 3-tuple
             name, confidence, method = canonicalize_skill(raw.name, self._synonym_map)
-            return name, confidence
+            unmapped = (method == "unmatched")
+            return name, confidence, unmapped
         except Exception:
-            # Fallback: title-case the original name
-            return raw.name.strip().title(), 0.5
+            return raw.name.strip().title(), 0.5, True
 
     def _normalize_experience(self, raw: RawExperience) -> Optional[Experience]:
         """Convert a ``RawExperience`` into a canonical ``Experience``."""

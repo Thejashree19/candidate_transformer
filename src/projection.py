@@ -107,24 +107,18 @@ class OutputProjector:
             else:
                 is_missing = False
 
-            if is_missing and field_cfg.required:
-                behavior = self._config.on_missing
-                if behavior == OnMissing.ERROR:
+            if is_missing:
+                # Per-field on_missing overrides global on_missing
+                behavior = field_cfg.on_missing or self._config.on_missing
+                if field_cfg.required and behavior == OnMissing.ERROR:
                     raise ValueError(
                         f"Required field '{output_key}' (from '{source_path}') is missing"
                     )
-                elif behavior == OnMissing.OMIT:
-                    continue
-                else:  # NULL
-                    result[output_key] = None
-                    continue
-            elif is_missing and not field_cfg.required:
-                behavior = self._config.on_missing
                 if behavior == OnMissing.OMIT:
                     continue
-                else:
-                    result[output_key] = None
-                    continue
+                # NULL (default)
+                result[output_key] = None
+                continue
 
             result[output_key] = value
 
@@ -244,6 +238,14 @@ class OutputProjector:
         if isinstance(value, str):
             phone, _confidence = normalize_phone(value)
             return phone
+
+        if isinstance(value, dict):
+            if value.get("normalized"):
+                return value["normalized"]
+            raw = value.get("raw", "")
+            if raw:
+                phone, _confidence = normalize_phone(raw)
+                return phone
 
         return value
 

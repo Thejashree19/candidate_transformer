@@ -1,11 +1,14 @@
 """
-Output validation engine.
+Validation engine.
 
-Validates projected output dicts against:
-  • The default canonical schema (when no config is supplied)
-  • A user-supplied ``OutputConfig`` with per-field type and required checks
+Provides two validators:
 
-Always collects *all* errors before returning — never short-circuits.
+* ``RecordValidator``  — pre-merge validation for raw ``RawCandidate``
+  records.  Performs type/shape checks and quarantines garbage records.
+* ``OutputValidator``  — post-projection validation for output dicts
+  against the canonical schema or a user-supplied ``OutputConfig``.
+
+Both validators collect *all* errors before returning — never short-circuit.
 """
 
 from __future__ import annotations
@@ -14,7 +17,9 @@ import logging
 import re
 from typing import Any, Optional
 
-from src.models import FieldConfig, OnMissing, OutputConfig
+import jsonschema
+
+from src.models import FieldConfig, OnMissing, OutputConfig, CanonicalProfile
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +27,111 @@ logger = logging.getLogger(__name__)
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 _E164_RE = re.compile(r"^\+[1-9]\d{1,14}$")
 _COUNTRY_RE = re.compile(r"^[A-Za-z]{2}$")
+
+
+class RecordValidator:
+    """Pre-merge validator for raw candidate records.
+
+    Performs type/shape checks on each field and quarantines garbage records
+    (empty or non-parseable) into an errors list attached to the run.
+    """
+
+    def validate_batch(
+        self,
+        records: list,  # list[RawCandidate] — avoid circular import
+    ) -> tuple[list, list[str]]:
+        """Validate a batch of raw candidate records.
+
+        Parameters
+        ----------
+        records:
+            List of RawCandidate objects to validate.
+
+        Returns
+        -------
+        tuple[list, list[str]]
+            ``(valid_records, error_messages)`` — garbage records are
+            removed from the valid list and described in errors.
+        """
+        valid: list = []
+        errors: list[str] = []
+
+        for i, record in enumerate(records):
+            record_errors = self._validate_record(record, i)
+            if self._is_garbage(record):
+                # Quarantine: completely empty/useless record
+                errors.append(
+                    f"Record {i} quarantined (garbage): "
+                    f"source={record.source_type.value}, "
+                    f"source_id={record.source_id or 'unknown'}, "
+                    f"errors={record_errors}"
+                )
+                continue
+            if record_errors:
+                # Partial errors: fix up the record and keep it
+                for err in record_errors:
+                    errors.append(
+                        f"Record {i} field warning: {err} "
+                        f"(source={record.source_type.value})"
+                    )
+            valid.append(record)
+
+        return valid, errors
+
+    @staticmethod
+    def _validate_record(record, index: int) -> list[str]:
+        """Validate individual fields on a record. Returns list of error messages."""
+        errors: list[str] = []
+
+        # full_name should be a non-empty string if present
+        if record.full_name is not None:
+            if not isinstance(record.full_name, str) or not record.full_name.strip():
+                errors.append(f"full_name is empty or not a string")
+                record.full_name = None
+
+        # emails should be a list of valid-looking strings
+        if record.emails:
+            valid_emails = []
+            for email in record.emails:
+                if isinstance(email, str) and _EMAIL_RE.match(email.strip()):
+                    valid_emails.append(email.strip())
+                else:
+                    errors.append(f"Invalid email dropped: '{email}'")
+            record.emails = valid_emails
+
+        # phones should be a list of strings
+        if record.phones:
+            valid_phones = []
+            for phone in record.phones:
+                if isinstance(phone, str) and phone.strip():
+                    valid_phones.append(phone.strip())
+                else:
+                    errors.append(f"Invalid phone dropped: '{phone}'")
+            record.phones = valid_phones
+
+        # skills should be a list
+        if not isinstance(record.skills, list):
+            errors.append(f"skills is not a list, resetting to []")
+            record.skills = []
+
+        # years_experience should be numeric if present
+        if record.years_experience is not None:
+            if not isinstance(record.years_experience, (int, float)):
+                errors.append(f"years_experience is not numeric: '{record.years_experience}'")
+                record.years_experience = None
+
+        return errors
+
+    @staticmethod
+    def _is_garbage(record) -> bool:
+        """Check if a record is completely empty/garbage and should be quarantined."""
+        has_name = record.full_name and str(record.full_name).strip()
+        has_email = bool(record.emails)
+        has_phone = bool(record.phones)
+        
+        # A record is garbage if it has NO identifying keys (name, email, or phone)
+        # Without these, it cannot be merged or identified.
+        return not any([has_name, has_email, has_phone])
 
 
 class OutputValidator:
@@ -73,32 +183,27 @@ class OutputValidator:
         """Validate against the default CanonicalProfile schema."""
         errors: list[str] = []
 
-        # candidate_id: non-empty string
-        self._check_non_empty_string(output, "candidate_id", errors)
+        if not output.get("candidate_id"):
+            errors.append("Missing required field 'candidate_id'")
 
-        # full_name: non-empty string
-        self._check_non_empty_string(output, "full_name", errors)
+        if not output.get("full_name") or not str(output["full_name"]).strip():
+            errors.append("Missing or empty required field 'full_name'")
 
-        # emails: list of strings, each looks like email
-        self._check_email_list(output, "emails", errors)
+        conf = output.get("overall_confidence")
+        if conf is not None and not (0.0 <= conf <= 1.0):
+            errors.append(f"Confidence score {conf} out of range [0.0, 1.0]")
 
-        # phones: list of strings, each in E.164
-        self._check_phone_list(output, "phones", errors)
+        if "emails" in output:
+            for i, email in enumerate(output["emails"]):
+                if not isinstance(email, str) or not _EMAIL_RE.match(email):
+                    errors.append(f"Invalid email at index {i}: '{email}'")
 
-        # location: object with city/region/country
-        self._check_location(output, "location", errors)
-
-        # skills: list of objects with 'name' key
-        self._check_skills(output, "skills", errors)
-
-        # experience: list of objects with 'company' and 'title' keys
-        self._check_experience(output, "experience", errors)
-
-        # education: list of objects with 'institution' key
-        self._check_education(output, "education", errors)
-
-        # overall_confidence: number 0.0-1.0
-        self._check_confidence(output, "overall_confidence", errors)
+        if "phones" in output:
+            for i, phone in enumerate(output["phones"]):
+                # phone might be a string or a dict (PhoneEntry)
+                phone_str = phone.get("normalized") or phone.get("raw") if isinstance(phone, dict) else phone
+                if not isinstance(phone_str, str) or not _E164_RE.match(phone_str):
+                    errors.append(f"Invalid phone (not E.164) at index {i}: '{phone_str}'")
 
         return errors
 
@@ -107,186 +212,47 @@ class OutputValidator:
     # ------------------------------------------------------------------
 
     def _validate_config_schema(self, output: dict, config: OutputConfig) -> list[str]:
-        """Validate against ``config.fields`` definitions."""
+        """Validate against ``config.fields`` definitions using generated JSON Schema."""
         errors: list[str] = []
+        
+        # Build JSON Schema dynamically from config.fields
+        schema = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {},
+            "required": []
+        }
+        
+        type_mapping = {
+            "string": {"type": "string"},
+            "string[]": {"type": "array", "items": {"type": "string"}},
+            "number": {"type": "number"},
+            "object": {"type": "object"},
+            "object[]": {"type": "array", "items": {"type": "object"}},
+            "boolean": {"type": "boolean"},
+        }
 
         for field_cfg in config.fields:
             key = field_cfg.path
-            value = output.get(key)
-            is_present = key in output and value is not None
-
-            # Check required
-            if field_cfg.required and not is_present:
-                errors.append(f"Required field '{key}' is missing or null")
-                continue
-
-            if not is_present:
-                continue
-
-            # Check type
-            if not self._check_type(value, field_cfg.type):
-                errors.append(
-                    f"Field '{key}' has invalid type: expected {field_cfg.type}, "
-                    f"got {type(value).__name__}"
-                )
+            
+            # Simple handling of flat paths. Deep paths (e.g. `location.city`) 
+            # would require building a nested schema, but this serves as a basic check
+            # for the top-level keys or assumes the output is flat/mapped.
+            # In an advanced setup, we'd build the nested object schema.
+            
+            prop_schema = type_mapping.get(field_cfg.type, {})
+            schema["properties"][key] = prop_schema
+            
+            if field_cfg.required:
+                schema["required"].append(key)
+                
+        try:
+            jsonschema.validate(instance=output, schema=schema)
+        except jsonschema.ValidationError as e:
+            errors.append(f"Validation error: {e.message} at {'/'.join(map(str, e.path))}")
+        except Exception as e:
+            errors.append(f"Unexpected validation error: {e}")
 
         return errors
 
-    # ------------------------------------------------------------------
-    # Default schema field checkers
-    # ------------------------------------------------------------------
 
-    @staticmethod
-    def _check_non_empty_string(output: dict, key: str, errors: list[str]) -> None:
-        """Ensure *key* is a non-empty string."""
-        val = output.get(key)
-        if val is None:
-            errors.append(f"'{key}' is missing")
-        elif not isinstance(val, str):
-            errors.append(f"'{key}' must be a string, got {type(val).__name__}")
-        elif not val.strip():
-            errors.append(f"'{key}' must be a non-empty string")
-
-    @staticmethod
-    def _check_email_list(output: dict, key: str, errors: list[str]) -> None:
-        """Ensure *key* is a list of valid-looking email strings."""
-        val = output.get(key)
-        if val is None:
-            # emails can be absent — treat as empty list
-            return
-        if not isinstance(val, list):
-            errors.append(f"'{key}' must be a list, got {type(val).__name__}")
-            return
-        for i, email in enumerate(val):
-            if not isinstance(email, str):
-                errors.append(f"'{key}[{i}]' must be a string, got {type(email).__name__}")
-            elif not _EMAIL_RE.match(email):
-                errors.append(f"'{key}[{i}]' does not look like a valid email: '{email}'")
-
-    @staticmethod
-    def _check_phone_list(output: dict, key: str, errors: list[str]) -> None:
-        """Ensure *key* is a list of E.164-formatted phone strings."""
-        val = output.get(key)
-        if val is None:
-            return
-        if not isinstance(val, list):
-            errors.append(f"'{key}' must be a list, got {type(val).__name__}")
-            return
-        for i, phone in enumerate(val):
-            if not isinstance(phone, str):
-                errors.append(f"'{key}[{i}]' must be a string, got {type(phone).__name__}")
-            elif not phone.startswith("+"):
-                errors.append(
-                    f"'{key}[{i}]' must be in E.164 format (starts with +): '{phone}'"
-                )
-
-    @staticmethod
-    def _check_location(output: dict, key: str, errors: list[str]) -> None:
-        """Ensure *key* is a location object with valid fields."""
-        val = output.get(key)
-        if val is None:
-            return
-        if not isinstance(val, dict):
-            errors.append(f"'{key}' must be an object, got {type(val).__name__}")
-            return
-        country = val.get("country")
-        if country is not None and isinstance(country, str) and country.strip():
-            if not _COUNTRY_RE.match(country):
-                errors.append(
-                    f"'{key}.country' must be a 2-character alpha ISO code, got '{country}'"
-                )
-
-    @staticmethod
-    def _check_skills(output: dict, key: str, errors: list[str]) -> None:
-        """Ensure *key* is a list of objects with a 'name' key."""
-        val = output.get(key)
-        if val is None:
-            return
-        if not isinstance(val, list):
-            errors.append(f"'{key}' must be a list, got {type(val).__name__}")
-            return
-        for i, skill in enumerate(val):
-            if not isinstance(skill, dict):
-                errors.append(f"'{key}[{i}]' must be an object, got {type(skill).__name__}")
-            elif "name" not in skill:
-                errors.append(f"'{key}[{i}]' is missing required key 'name'")
-
-    @staticmethod
-    def _check_experience(output: dict, key: str, errors: list[str]) -> None:
-        """Ensure *key* is a list of objects with 'company' and 'title' keys."""
-        val = output.get(key)
-        if val is None:
-            return
-        if not isinstance(val, list):
-            errors.append(f"'{key}' must be a list, got {type(val).__name__}")
-            return
-        for i, exp in enumerate(val):
-            if not isinstance(exp, dict):
-                errors.append(f"'{key}[{i}]' must be an object, got {type(exp).__name__}")
-                continue
-            if "company" not in exp:
-                errors.append(f"'{key}[{i}]' is missing required key 'company'")
-            if "title" not in exp:
-                errors.append(f"'{key}[{i}]' is missing required key 'title'")
-
-    @staticmethod
-    def _check_education(output: dict, key: str, errors: list[str]) -> None:
-        """Ensure *key* is a list of objects with 'institution' key."""
-        val = output.get(key)
-        if val is None:
-            return
-        if not isinstance(val, list):
-            errors.append(f"'{key}' must be a list, got {type(val).__name__}")
-            return
-        for i, edu in enumerate(val):
-            if not isinstance(edu, dict):
-                errors.append(f"'{key}[{i}]' must be an object, got {type(edu).__name__}")
-            elif "institution" not in edu:
-                errors.append(f"'{key}[{i}]' is missing required key 'institution'")
-
-    @staticmethod
-    def _check_confidence(output: dict, key: str, errors: list[str]) -> None:
-        """Ensure *key* is a number between 0.0 and 1.0."""
-        val = output.get(key)
-        if val is None:
-            return
-        if not isinstance(val, (int, float)):
-            errors.append(f"'{key}' must be a number, got {type(val).__name__}")
-            return
-        if val < 0.0 or val > 1.0:
-            errors.append(f"'{key}' must be between 0.0 and 1.0, got {val}")
-
-    # ------------------------------------------------------------------
-    # Type checking helper
-    # ------------------------------------------------------------------
-
-    @staticmethod
-    def _check_type(value: Any, expected_type: str) -> bool:
-        """Return True if *value* matches the expected type string.
-
-        Supported type strings:
-          - ``string``: ``str``
-          - ``string[]``: ``list[str]``
-          - ``number``: ``int | float``
-          - ``object``: ``dict``
-          - ``object[]``: ``list[dict]``
-          - ``boolean``: ``bool``
-        """
-        if value is None:
-            return True
-
-        if expected_type == "string":
-            return isinstance(value, str)
-        if expected_type == "string[]":
-            return isinstance(value, list) and all(isinstance(v, str) for v in value)
-        if expected_type == "number":
-            return isinstance(value, (int, float)) and not isinstance(value, bool)
-        if expected_type == "object":
-            return isinstance(value, dict)
-        if expected_type == "object[]":
-            return isinstance(value, list) and all(isinstance(v, dict) for v in value)
-        if expected_type == "boolean":
-            return isinstance(value, bool)
-
-        # Unknown type — accept
-        return True

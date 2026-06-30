@@ -74,6 +74,8 @@ class RawSkill(BaseModel):
     name: str
     source: SourceType
     method: ExtractionMethod = ExtractionMethod.STRUCTURED_PARSE
+    source_id: str = ""
+    fetched_at: str = ""
 
 
 class RawExperience(BaseModel):
@@ -85,6 +87,8 @@ class RawExperience(BaseModel):
     summary: Optional[str] = None
     source: SourceType = SourceType.RECRUITER_CSV
     method: ExtractionMethod = ExtractionMethod.STRUCTURED_PARSE
+    source_id: str = ""
+    fetched_at: str = ""
 
 
 class RawEducation(BaseModel):
@@ -95,6 +99,8 @@ class RawEducation(BaseModel):
     end_year: Optional[int] = None
     source: SourceType = SourceType.RECRUITER_CSV
     method: ExtractionMethod = ExtractionMethod.STRUCTURED_PARSE
+    source_id: str = ""
+    fetched_at: str = ""
 
 
 class RawCandidate(BaseModel):
@@ -108,6 +114,8 @@ class RawCandidate(BaseModel):
     location_raw: Optional[str] = None
     portfolio_url: Optional[str] = None
     other_links: list[str] = Field(default_factory=list)
+    linkedin_url: Optional[str] = None
+    github_url: Optional[str] = None
     headline: Optional[str] = None
     years_experience: Optional[float] = None
     skills: list[RawSkill] = Field(default_factory=list)
@@ -119,6 +127,9 @@ class RawCandidate(BaseModel):
     # Provenance
     source_type: SourceType
     extraction_method: ExtractionMethod = ExtractionMethod.STRUCTURED_PARSE
+    source_id: str = ""
+    fetched_at: str = ""
+    low_confidence_match: bool = False
 
 
 # ---------------------------------------------------------------------------
@@ -138,11 +149,19 @@ class Links(BaseModel):
     other: list[str] = Field(default_factory=list)
 
 
+class PhoneEntry(BaseModel):
+    """A normalized phone entry."""
+    raw: str
+    normalized: Optional[str] = None
+    confidence: float = 0.0
+
+
 class CanonicalSkill(BaseModel):
     """A canonicalized skill with confidence and source provenance."""
     name: str
     confidence: float = 0.0
     sources: list[str] = Field(default_factory=list)
+    unmapped: bool = False
 
 
 class Experience(BaseModel):
@@ -167,6 +186,8 @@ class ProvenanceRecord(BaseModel):
     field: str
     source: str
     method: str
+    value: Any = None
+    is_alternate: bool = False
 
 
 class CanonicalProfile(BaseModel):
@@ -177,7 +198,7 @@ class CanonicalProfile(BaseModel):
     candidate_id: str = ""
     full_name: str = ""
     emails: list[str] = Field(default_factory=list)
-    phones: list[str] = Field(default_factory=list)
+    phones: list[PhoneEntry] = Field(default_factory=list)
     location: Location = Field(default_factory=Location)
     links: Links = Field(default_factory=Links)
     headline: Optional[str] = None
@@ -186,7 +207,10 @@ class CanonicalProfile(BaseModel):
     experience: list[Experience] = Field(default_factory=list)
     education: list[Education] = Field(default_factory=list)
     provenance: list[ProvenanceRecord] = Field(default_factory=list)
+    # Confidence Scoring
+    field_confidence: dict[str, float] = Field(default_factory=dict)
     overall_confidence: float = 0.0
+    low_confidence_match: bool = False
 
     def generate_candidate_id(self) -> str:
         """Generate a deterministic UUID v5 from the primary email or name."""
@@ -211,6 +235,7 @@ class FieldConfig(BaseModel):
     type: str = "string"               # "string", "string[]", "number", "object"
     required: bool = False
     normalize: Optional[str] = None    # "E164", "canonical", "YYYY-MM", etc.
+    on_missing: Optional[OnMissing] = None
 
     model_config = {"populate_by_name": True}
 

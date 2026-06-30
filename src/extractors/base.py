@@ -8,9 +8,14 @@ error-handling boundary so callers never see unhandled exceptions.
 
 from __future__ import annotations
 
+import logging
+import uuid
 from abc import ABC, abstractmethod
+from datetime import datetime
 
 from src.models import RawCandidate, SourceEnvelope, SourceStatus
+
+logger = logging.getLogger(__name__)
 
 
 class BaseExtractor(ABC):
@@ -47,8 +52,28 @@ class BaseExtractor(ABC):
         try:
             if envelope.status != SourceStatus.OK:
                 return []
-            return self.extract(envelope)
+            candidates = self.extract(envelope)
+            # Stamp each record with a unique source_id and fetch timestamp
+            timestamp = datetime.utcnow().isoformat() + "Z"
+            for candidate in candidates:
+                if not candidate.source_id:
+                    candidate.source_id = str(uuid.uuid4())
+                if not candidate.fetched_at:
+                    candidate.fetched_at = timestamp
+                
+                # Propagate to nested arrays
+                for skill in candidate.skills:
+                    skill.source_id = candidate.source_id
+                    skill.fetched_at = candidate.fetched_at
+                for exp in candidate.experience:
+                    exp.source_id = candidate.source_id
+                    exp.fetched_at = candidate.fetched_at
+                for edu in candidate.education:
+                    edu.source_id = candidate.source_id
+                    edu.fetched_at = candidate.fetched_at
+            return candidates
         except Exception as e:
             envelope.status = SourceStatus.FAILED
             envelope.error_message = str(e)
+            logger.error("Extraction failed for %s: %s", envelope.source_type.value, e)
             return []

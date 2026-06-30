@@ -14,8 +14,8 @@ A deterministic pipeline that ingests candidate data from multiple sources, norm
 
 - Recruiter CSV export
 - ATS JSON blob
-- GitHub profile data via cached JSON
 - Recruiter notes text file
+- Resumes (PDF, DOCX, TXT)
 
 ## Requirements
 
@@ -59,11 +59,11 @@ python main.py --demo
 Give the structured and unstructured inputs separately in the CLI command.
 EXAMPLE Command:
 ```bash
-python main.py --resume custom_resume.txt --github Thejashree19 --github-cache sample_inputs/github_cache.json --linkedin https://www.linkedin.com/in/thejashree-v-m-284ab3290/ --linkedin-cache sample_inputs/linkedin_cache.json
+python main.py --resume custom_resume.txt
 ```
 
 ```bash
-python main.py --csv sample_inputs/recruiter_export.csv --ats sample_inputs/ats_candidates.json --github-profiles sample_inputs/github_profiles.json --github-cache sample_inputs/github_cache.json --notes sample_inputs/recruiter_notes.txt --config config/custom_config_example.json --output sample_outputs/custom_output.json
+python main.py --csv sample_inputs/recruiter_export.csv --ats sample_inputs/ats_candidates.json --notes sample_inputs/recruiter_notes.txt --config config/custom_config_example.json --output sample_outputs/custom_output.json
 ```
 
 ```bash
@@ -73,7 +73,7 @@ python main.py --ats custom_ats.json --resume custom_resume.pdf
 ### Print JSON to terminal
 
 ```bash
-python main.py --csv sample_inputs/recruiter_export.csv --ats sample_inputs/ats_candidates.json --github-profiles sample_inputs/github_profiles.json --github-cache sample_inputs/github_cache.json --notes sample_inputs/recruiter_notes.txt
+python main.py --csv sample_inputs/recruiter_export.csv --ats sample_inputs/ats_candidates.json --notes sample_inputs/recruiter_notes.txt
 ```
 
 ## Example output shape

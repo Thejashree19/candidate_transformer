@@ -31,7 +31,7 @@ from src.extractors.resume_extractor import ResumeExtractor
 from src.merger import CandidateMerger
 from src.confidence import ConfidenceScorer
 from src.projection import OutputProjector
-from src.validator import OutputValidator
+from src.validator import OutputValidator, RecordValidator
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +69,7 @@ class Pipeline:
         self.merger = CandidateMerger()
         self.confidence_scorer = ConfidenceScorer()
         self.validator = OutputValidator()
+        self.record_validator = RecordValidator()
 
     def run(
         self,
@@ -137,6 +138,14 @@ class Pipeline:
             return result
 
         logger.info("Total raw candidates extracted: %d", len(all_candidates))
+
+        # ─── Stage 2.5: Pre-Merge Validation ────────────────────────
+        all_candidates, validation_errors = self.record_validator.validate_batch(all_candidates)
+        result.warnings.extend(validation_errors)
+
+        if not all_candidates:
+            result.warnings.append("No valid candidates remained after pre-merge validation.")
+            return result
 
         # ─── Stage 3 & 4: Normalize + Merge ────────────────────────
         # (Normalization happens inside the merger during field-level merge)

@@ -18,6 +18,7 @@ from src.models import (
     Location,
     OnMissing,
     OutputConfig,
+    PhoneEntry,
     ProvenanceRecord,
     RawCandidate,
     RawEducation,
@@ -212,7 +213,7 @@ class TestConfidenceScorer:
         return CanonicalProfile(
             full_name="Alice Johnson",
             emails=["alice@test.com"],
-            phones=["+16505550101"],
+            phones=[PhoneEntry(raw="+16505550101", normalized="+16505550101", confidence=1.0)],
             skills=[
                 CanonicalSkill(name="Python", confidence=1.0, sources=["ats_json"]),
             ],
@@ -271,7 +272,7 @@ class TestOutputProjector:
         return CanonicalProfile(
             full_name="Alice Johnson",
             emails=["alice@test.com", "alice@work.com"],
-            phones=["+16505550101"],
+            phones=[PhoneEntry(raw="+16505550101", normalized="+16505550101", confidence=1.0)],
             location=Location(city="San Francisco", region="California", country="US"),
             skills=[
                 CanonicalSkill(name="Python", confidence=1.0, sources=["ats_json"]),
@@ -329,7 +330,7 @@ class TestOutputProjector:
         profile = CanonicalProfile(
             full_name="Alice Johnson",
             emails=["alice@test.com"],
-            phones=["(415) 555-2671"],
+            phones=[PhoneEntry(raw="(415) 555-2671", normalized=None, confidence=0.0)],
             location=Location(city="San Francisco", region="California", country="US"),
             skills=[
                 CanonicalSkill(name="reactjs", confidence=0.7, sources=["ats_json"]),

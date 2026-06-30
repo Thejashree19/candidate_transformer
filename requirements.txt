@@ -11,3 +11,4 @@ uvicorn>=0.23.0
 python-multipart>=0.0.6
 pypdf>=3.0.0
 python-docx>=0.8.11
+jsonschema>=4.19.0

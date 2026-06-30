@@ -1,0 +1,1698 @@
+{
+  "metadata": {
+    "total_profiles": 7,
+    "sources_processed": [
+      {
+        "type": "recruiter_csv",
+        "path": "sample_inputs/recruiter_export.csv",
+        "status": "ok"
+      },
+      {
+        "type": "ats_json",
+        "path": "sample_inputs/ats_candidates.json",
+        "status": "ok"
+      },
+      {
+        "type": "github",
+        "path": "github://alicejohnson",
+        "status": "ok"
+      },
+      {
+        "type": "github",
+        "path": "github://bobchen",
+        "status": "ok"
+      },
+      {
+        "type": "linkedin",
+        "path": "https://linkedin.com/in/alicejohnson",
+        "status": "ok"
+      },
+      {
+        "type": "linkedin",
+        "path": "https://linkedin.com/in/bobchen",
+        "status": "ok"
+      },
+      {
+        "type": "recruiter_notes",
+        "path": "sample_inputs/recruiter_notes.txt",
+        "status": "ok"
+      },
+      {
+        "type": "resume",
+        "path": "sample_inputs/resume_alice.txt",
+        "status": "ok"
+      },
+      {
+        "type": "resume",
+        "path": "sample_inputs/resume_bob.pdf",
+        "status": "ok"
+      }
+    ],
+    "warnings": [],
+    "errors": []
+  },
+  "profiles": [
+    {
+      "candidate_id": "a3070b96-dbb1-5136-b678-0f6834e99a5c",
+      "full_name": "Alice M. Johnson",
+      "emails": [
+        "alice.johnson@email.com",
+        "alice.j@personal.com"
+      ],
+      "phones": [
+        "+16505550101"
+      ],
+      "location": {
+        "city": "San Francisco",
+        "region": "California",
+        "country": "US"
+      },
+      "links": {
+        "linkedin": "https://linkedin.com/in/alicejohnson",
+        "github": "https://github.com/alicejohnson",
+        "portfolio": null,
+        "other": [
+          "https://alicejohnson.dev"
+        ]
+      },
+      "headline": "Staff Engineer - AI Platform",
+      "years_experience": 8.0,
+      "skills": [
+        {
+          "name": "Python",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv",
+            "github",
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "JavaScript",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv",
+            "github",
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "React",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv",
+            "github",
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "TensorFlow",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "github"
+          ]
+        },
+        {
+          "name": "Docker",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv",
+            "github",
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "Kubernetes",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "github",
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "AWS",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "Machine Learning",
+          "confidence": 0.91,
+          "sources": [
+            "recruiter_csv",
+            "github",
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "pipeline",
+          "confidence": 0.248,
+          "sources": [
+            "github"
+          ]
+        },
+        {
+          "name": "mlops",
+          "confidence": 0.248,
+          "sources": [
+            "github"
+          ]
+        },
+        {
+          "name": "TypeScript",
+          "confidence": 0.62,
+          "sources": [
+            "github"
+          ]
+        },
+        {
+          "name": "dashboard",
+          "confidence": 0.248,
+          "sources": [
+            "github"
+          ]
+        },
+        {
+          "name": "analytics",
+          "confidence": 0.248,
+          "sources": [
+            "github"
+          ]
+        },
+        {
+          "name": "DevOps",
+          "confidence": 0.62,
+          "sources": [
+            "github"
+          ]
+        },
+        {
+          "name": "research",
+          "confidence": 0.248,
+          "sources": [
+            "github"
+          ]
+        },
+        {
+          "name": "papers",
+          "confidence": 0.248,
+          "sources": [
+            "github"
+          ]
+        },
+        {
+          "name": "Deep Learning",
+          "confidence": 0.44,
+          "sources": [
+            "recruiter_notes"
+          ]
+        }
+      ],
+      "experience": [
+        {
+          "company": "TechCorp Inc.",
+          "title": "Senior Software Engineer",
+          "start": "2020-03",
+          "end": null,
+          "summary": "Led AI platform team, built ML pipelines serving 10M+ predictions/day"
+        },
+        {
+          "company": "StartupXYZ",
+          "title": "Software Engineer",
+          "start": "2018-06",
+          "end": "2020-02",
+          "summary": "Full-stack development with React and Python microservices"
+        },
+        {
+          "company": "BigTech Co",
+          "title": "Junior Developer",
+          "start": "2016-08",
+          "end": "2018-05",
+          "summary": "Backend services in Java and Python"
+        },
+        {
+          "company": "TechCorp Inc.",
+          "title": "Staff Engineer - AI Platform",
+          "start": "2021-06",
+          "end": null,
+          "summary": "Leading the AI platform team to build scalable ML infrastructure."
+        },
+        {
+          "company": "DataSystems LLC",
+          "title": "Senior Software Engineer",
+          "start": "2018-01",
+          "end": "2021-05",
+          "summary": "Backend services in Python and Go."
+        }
+      ],
+      "education": [
+        {
+          "institution": "Stanford University",
+          "degree": "Bachelor of Science",
+          "field": "Computer Science",
+          "end_year": 2016
+        },
+        {
+          "institution": "BS Computer Science from Stanford University",
+          "degree": null,
+          "field": null,
+          "end_year": null
+        },
+        {
+          "institution": "Stanford (2016)",
+          "degree": "BS",
+          "field": "Computer Science",
+          "end_year": null
+        },
+        {
+          "institution": "Stanford University in 2016",
+          "degree": null,
+          "field": null,
+          "end_year": null
+        }
+      ],
+      "provenance": [
+        {
+          "field": "full_name",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "headline",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "location_raw",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "current_company",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "current_title",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "years_experience",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "emails",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "emails",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "phones",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "experience",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "experience",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "experience",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "experience",
+          "source": "linkedin",
+          "method": "api_fetch"
+        },
+        {
+          "field": "experience",
+          "source": "linkedin",
+          "method": "api_fetch"
+        },
+        {
+          "field": "education",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "education",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "education",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "education",
+          "source": "resume",
+          "method": "heuristic"
+        }
+      ],
+      "overall_confidence": 0.8094
+    },
+    {
+      "candidate_id": "1027f896-d364-5c46-8af1-28be0ef20ddd",
+      "full_name": "Robert Chen",
+      "emails": [
+        "bob.chen@techmail.com"
+      ],
+      "phones": [
+        "+14085550199"
+      ],
+      "location": {
+        "city": "San Jose",
+        "region": "California",
+        "country": "US"
+      },
+      "links": {
+        "linkedin": "https://linkedin.com/in/bobchen",
+        "github": "https://github.com/bobchen",
+        "portfolio": null,
+        "other": []
+      },
+      "headline": "Staff Data Engineer",
+      "years_experience": 7.0,
+      "skills": [
+        {
+          "name": "Python",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv",
+            "github",
+            "recruiter_notes",
+            "resume"
+          ]
+        },
+        {
+          "name": "SQL",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv",
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "Apache Spark",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv",
+            "github",
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "AWS",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv",
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "Apache Kafka",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv",
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "Airflow",
+          "confidence": 0.308,
+          "sources": [
+            "ats_json"
+          ]
+        },
+        {
+          "name": "dbt",
+          "confidence": 0.308,
+          "sources": [
+            "ats_json"
+          ]
+        },
+        {
+          "name": "ETL",
+          "confidence": 0.91,
+          "sources": [
+            "recruiter_csv",
+            "github",
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "Data Warehousing",
+          "confidence": 0.44,
+          "sources": [
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "the Apache",
+          "confidence": 0.176,
+          "sources": [
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "AWS well — has experience with Redshift",
+          "confidence": 0.176,
+          "sources": [
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "S3",
+          "confidence": 0.176,
+          "sources": [
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "Distributed Systems",
+          "confidence": 0.71,
+          "sources": [
+            "resume"
+          ]
+        }
+      ],
+      "experience": [
+        {
+          "company": "DataFlow Inc.",
+          "title": "Senior Data Engineer",
+          "start": "2021-01",
+          "end": null,
+          "summary": "Architected real-time data pipelines processing 500GB+ daily"
+        },
+        {
+          "company": "Analytics Corp",
+          "title": "Data Engineer",
+          "start": "2019-07",
+          "end": "2020-12",
+          "summary": "Built ETL pipelines and data warehouse on AWS Redshift"
+        },
+        {
+          "company": "DataFlow Inc.",
+          "title": "Data Engineer",
+          "start": "2019-03",
+          "end": null,
+          "summary": "Building ETL pipelines with Apache Spark."
+        }
+      ],
+      "education": [
+        {
+          "institution": "UC Berkeley",
+          "degree": "Master of Science",
+          "field": "Data Science",
+          "end_year": 2019
+        },
+        {
+          "institution": "UCLA",
+          "degree": "Bachelor of Science",
+          "field": "Statistics",
+          "end_year": 2017
+        },
+        {
+          "institution": "MS Data Science from UC Berkeley",
+          "degree": null,
+          "field": null,
+          "end_year": null
+        },
+        {
+          "institution": "UC Berkeley",
+          "degree": "BS",
+          "field": "Mathematics",
+          "end_year": 2018
+        }
+      ],
+      "provenance": [
+        {
+          "field": "full_name",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "headline",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "location_raw",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "current_company",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "current_title",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "years_experience",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "emails",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "phones",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "github",
+          "method": "api_fetch"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "resume",
+          "method": "heuristic"
+        },
+        {
+          "field": "skills",
+          "source": "resume",
+          "method": "heuristic"
+        },
+        {
+          "field": "experience",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "experience",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "experience",
+          "source": "linkedin",
+          "method": "api_fetch"
+        },
+        {
+          "field": "education",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "education",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "education",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "education",
+          "source": "linkedin",
+          "method": "api_fetch"
+        }
+      ],
+      "overall_confidence": 0.7844
+    },
+    {
+      "candidate_id": "b41ea686-3d5b-5df9-8669-12be6ed8879f",
+      "full_name": "Charlie Kumar",
+      "emails": [
+        "charlie.k@gmail.com"
+      ],
+      "phones": [
+        "+919876543210"
+      ],
+      "location": {
+        "city": "Bangalore",
+        "region": null,
+        "country": "IN"
+      },
+      "links": {
+        "linkedin": null,
+        "github": null,
+        "portfolio": null,
+        "other": []
+      },
+      "headline": "Full Stack Developer at InnovateTech",
+      "years_experience": 4.0,
+      "skills": [
+        {
+          "name": "JavaScript",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "TypeScript",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "React",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "Node.js",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "MongoDB",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "GraphQL",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        }
+      ],
+      "experience": [],
+      "education": [
+        {
+          "institution": "BE Computer Engineering from PES University; MS CS from Georgia Tech",
+          "degree": null,
+          "field": null,
+          "end_year": null
+        }
+      ],
+      "provenance": [
+        {
+          "field": "full_name",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "location_raw",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "current_company",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "current_title",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "years_experience",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "emails",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "phones",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "education",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        }
+      ],
+      "overall_confidence": 0.6914
+    },
+    {
+      "candidate_id": "97328e66-1650-5aae-9265-422e39590390",
+      "full_name": "Diana Reyes",
+      "emails": [
+        "diana.reyes@outlook.com"
+      ],
+      "phones": [],
+      "location": {
+        "city": "Austin",
+        "region": "Texas",
+        "country": "US"
+      },
+      "links": {
+        "linkedin": "https://linkedin.com/in/dianareyes",
+        "github": null,
+        "portfolio": null,
+        "other": []
+      },
+      "headline": "DevOps Lead at CloudScale",
+      "years_experience": 10.0,
+      "skills": [
+        {
+          "name": "Kubernetes",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "Docker",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "Terraform",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "AWS",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "CI/CD",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "Python",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "Linux",
+          "confidence": 0.71,
+          "sources": [
+            "recruiter_csv"
+          ]
+        }
+      ],
+      "experience": [],
+      "education": [
+        {
+          "institution": "BS IT from UT Austin",
+          "degree": null,
+          "field": null,
+          "end_year": null
+        }
+      ],
+      "provenance": [
+        {
+          "field": "full_name",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "location_raw",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "current_company",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "current_title",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "years_experience",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "emails",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "education",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        }
+      ],
+      "overall_confidence": 0.6421
+    },
+    {
+      "candidate_id": "1a1f9bcd-4d15-5bad-a193-1a5bfda2a435",
+      "full_name": "InvalidRow",
+      "emails": [],
+      "phones": [],
+      "location": {
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "links": {
+        "linkedin": null,
+        "github": null,
+        "portfolio": null,
+        "other": []
+      },
+      "headline": null,
+      "years_experience": null,
+      "skills": [],
+      "experience": [],
+      "education": [],
+      "provenance": [
+        {
+          "field": "full_name",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        }
+      ],
+      "overall_confidence": 0.79
+    },
+    {
+      "candidate_id": "5e31fc38-f6da-5048-9036-e03273acc281",
+      "full_name": "Evelyn Park",
+      "emails": [
+        "evelyn.park@techcorp.com"
+      ],
+      "phones": [
+        "+14155550188"
+      ],
+      "location": {
+        "city": "San Francisco",
+        "region": "California",
+        "country": "US"
+      },
+      "links": {
+        "linkedin": "https://linkedin.com/in/evelynpark",
+        "github": "https://github.com/evelynpark",
+        "portfolio": null,
+        "other": []
+      },
+      "headline": "Lead ML Engineer",
+      "years_experience": 5.0,
+      "skills": [
+        {
+          "name": "Python",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "TensorFlow",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "PyTorch",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "Deep Learning",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "Natural Language Processing",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "Computer Vision",
+          "confidence": 0.97,
+          "sources": [
+            "ats_json",
+            "recruiter_csv"
+          ]
+        },
+        {
+          "name": "MLOps",
+          "confidence": 0.308,
+          "sources": [
+            "ats_json"
+          ]
+        },
+        {
+          "name": "Docker",
+          "confidence": 0.77,
+          "sources": [
+            "ats_json"
+          ]
+        }
+      ],
+      "experience": [
+        {
+          "company": "TechCorp",
+          "title": "Senior ML Engineer",
+          "start": "2022-09",
+          "end": null,
+          "summary": "Leading NLP team, built transformer-based models for text classification"
+        },
+        {
+          "company": "AI Research Lab",
+          "title": "ML Research Engineer",
+          "start": "2021-06",
+          "end": "2022-08",
+          "summary": "Published 3 papers on computer vision and NLP"
+        }
+      ],
+      "education": [
+        {
+          "institution": "MIT",
+          "degree": "Doctor of Philosophy",
+          "field": "Machine Learning",
+          "end_year": 2021
+        },
+        {
+          "institution": "KAIST",
+          "degree": "Bachelor of Science",
+          "field": "Computer Science",
+          "end_year": 2016
+        },
+        {
+          "institution": "PhD Machine Learning from MIT",
+          "degree": null,
+          "field": null,
+          "end_year": null
+        }
+      ],
+      "provenance": [
+        {
+          "field": "full_name",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "headline",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "location_raw",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "current_company",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "current_title",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "years_experience",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "emails",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "phones",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        },
+        {
+          "field": "experience",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "experience",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "education",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "education",
+          "source": "ats_json",
+          "method": "field_mapping"
+        },
+        {
+          "field": "education",
+          "source": "recruiter_csv",
+          "method": "structured_parse"
+        }
+      ],
+      "overall_confidence": 0.7594
+    },
+    {
+      "candidate_id": "deed41ec-9553-5f93-a921-963904fadfb7",
+      "full_name": "Fatima Al-Rashid",
+      "emails": [
+        "fatima.r@globaltech.com"
+      ],
+      "phones": [
+        "+442079460958"
+      ],
+      "location": {
+        "city": null,
+        "region": null,
+        "country": "GB"
+      },
+      "links": {
+        "linkedin": null,
+        "github": null,
+        "portfolio": null,
+        "other": []
+      },
+      "headline": null,
+      "years_experience": 15.0,
+      "skills": [
+        {
+          "name": "Java",
+          "confidence": 0.44,
+          "sources": [
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "Scala",
+          "confidence": 0.44,
+          "sources": [
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "Distributed Systems",
+          "confidence": 0.44,
+          "sources": [
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "Microservices",
+          "confidence": 0.44,
+          "sources": [
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "Kubernetes",
+          "confidence": 0.44,
+          "sources": [
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "System Design",
+          "confidence": 0.44,
+          "sources": [
+            "recruiter_notes"
+          ]
+        },
+        {
+          "name": "Apache Kafka",
+          "confidence": 0.44,
+          "sources": [
+            "recruiter_notes"
+          ]
+        }
+      ],
+      "experience": [],
+      "education": [],
+      "provenance": [
+        {
+          "field": "full_name",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "location_raw",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "current_company",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "years_experience",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "emails",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "phones",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        },
+        {
+          "field": "skills",
+          "source": "recruiter_notes",
+          "method": "regex"
+        }
+      ],
+      "overall_confidence": 0.4942
+    }
+  ]
+}

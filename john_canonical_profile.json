@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "total_profiles": 0,
+    "sources_processed": [
+      {
+        "type": "recruiter_notes",
+        "path": "C:/Users/Desktop/john_interview_notes.txt",
+        "status": "failed"
+      },
+      {
+        "type": "resume",
+        "path": "C:/Users/Downloads/JohnDoe_Resume.pdf",
+        "status": "failed"
+      }
+    ],
+    "warnings": [
+      "No candidates extracted from any source."
+    ],
+    "errors": []
+  },
+  "profiles": []
+}

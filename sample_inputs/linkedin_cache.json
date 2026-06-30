@@ -1,0 +1,75 @@
+{
+  "alicejohnson": {
+    "name": "Alice M. Johnson",
+    "headline": "Staff AI Engineer | TechCorp",
+    "url": "https://linkedin.com/in/alicejohnson",
+    "location": "San Francisco Bay Area",
+    "experience": [
+      {
+        "company": "TechCorp Inc.",
+        "title": "Staff Engineer - AI Platform",
+        "start": "2021-06",
+        "end": null,
+        "description": "Leading the AI platform team to build scalable ML infrastructure."
+      },
+      {
+        "company": "DataSystems LLC",
+        "title": "Senior Software Engineer",
+        "start": "2018-01",
+        "end": "2021-05",
+        "description": "Backend services in Python and Go."
+      }
+    ],
+    "education": [
+      {
+        "school": "Stanford University",
+        "degree": "Bachelor of Science",
+        "field": "Computer Science",
+        "end_year": 2016
+      }
+    ]
+  },
+  "bobchen": {
+    "name": "Bob Chen",
+    "headline": "Data Engineer at DataFlow",
+    "url": "https://linkedin.com/in/bobchen",
+    "location": "San Jose, CA",
+    "experience": [
+      {
+        "company": "DataFlow Inc.",
+        "title": "Data Engineer",
+        "start": "2019-03",
+        "end": null,
+        "description": "Building ETL pipelines with Apache Spark."
+      }
+    ],
+    "education": [
+      {
+        "school": "UC Berkeley",
+        "degree": "BS",
+        "field": "Mathematics",
+        "end_year": 2018
+      }
+    ]
+  },
+  "thejashree-v-m-284ab3290": {
+    "name": "THEJASHREE V M",
+    "headline": "Information Technology Student at CIT",
+    "location": "Chennai",
+    "experience": [
+      {
+        "company": "Chennai Institute of Technology Innovation Labs",
+        "title": "Research Intern",
+        "start": "2024-11",
+        "end": "2024-12"
+      }
+    ],
+    "education": [
+      {
+        "school": "Chennai Institute of Technology",
+        "degree": "B.Tech Information Technology",
+        "end_year": 2027
+      }
+    ]
+  }
+}

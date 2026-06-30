@@ -126,9 +126,26 @@ def parse_args() -> argparse.Namespace:
         help="Path to cached GitHub API responses (for offline/deterministic use)",
     )
     sources.add_argument(
+        "--linkedin",
+        metavar="URL",
+        nargs="+",
+        help="LinkedIn URL(s) or username(s)",
+    )
+    sources.add_argument(
+        "--linkedin-cache",
+        metavar="PATH",
+        help="Path to cached LinkedIn API responses",
+    )
+    sources.add_argument(
         "--notes",
         metavar="PATH",
         help="Path to recruiter notes text file",
+    )
+    sources.add_argument(
+        "--resume",
+        metavar="PATH",
+        nargs="+",
+        help="Path to resume file(s) (PDF, DOCX, TXT)",
     )
 
     # ─── Configuration ──────────────────────────────────────────
@@ -165,14 +182,30 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Enable debug logging",
     )
+    runtime.add_argument(
+        "--demo",
+        action="store_true",
+        help="Run with all included sample data (overrides other input flags)",
+    )
 
     args = parser.parse_args()
 
+    # Apply demo defaults
+    if args.demo:
+        args.csv = "sample_inputs/recruiter_export.csv"
+        args.ats = "sample_inputs/ats_candidates.json"
+        args.github = ["alicejohnson", "bobchen"]
+        args.github_cache = "sample_inputs/github_cache.json"
+        args.linkedin = ["https://linkedin.com/in/alicejohnson", "https://linkedin.com/in/bobchen"]
+        args.linkedin_cache = "sample_inputs/linkedin_cache.json"
+        args.notes = "sample_inputs/recruiter_notes.txt"
+        args.resume = ["sample_inputs/resume_alice.txt", "sample_inputs/resume_bob.pdf"]
+
     # Validate: at least one source required
-    if not any([args.csv, args.ats, args.github, args.github_profiles, args.notes]):
+    if not any([args.csv, args.ats, args.github, args.github_profiles, args.linkedin, args.notes, args.resume]):
         parser.error(
             "At least one input source is required "
-            "(--csv, --ats, --github, --github-profiles, or --notes)"
+            "(--csv, --ats, --github, --github-profiles, --linkedin, --notes, --resume, or --demo)"
         )
 
     return args
@@ -196,8 +229,9 @@ def main() -> None:
     # Build GitHub usernames list
     github_usernames = load_github_usernames(args.github, args.github_profiles)
 
-    # Determine GitHub cache path
+    # Determine caches
     github_cache = args.github_cache if hasattr(args, "github_cache") else None
+    linkedin_cache = args.linkedin_cache if hasattr(args, "linkedin_cache") else None
 
     # Log sources
     logger.info("─── Input Sources ───")
@@ -209,8 +243,14 @@ def main() -> None:
         logger.info("  GitHub:  %s", ", ".join(github_usernames))
     if github_cache:
         logger.info("  GH Cache: %s", github_cache)
+    if args.linkedin:
+        logger.info("  LinkedIn: %s", ", ".join(args.linkedin))
+    if linkedin_cache:
+        logger.info("  LI Cache: %s", linkedin_cache)
     if args.notes:
         logger.info("  Notes:   %s", args.notes)
+    if args.resume:
+        logger.info("  Resumes: %s", ", ".join(args.resume))
     logger.info("─────────────────────")
 
     # Run pipeline
@@ -219,8 +259,11 @@ def main() -> None:
         csv_path=args.csv,
         ats_path=args.ats,
         github_usernames=github_usernames,
+        linkedin_urls=args.linkedin,
         notes_path=args.notes,
+        resume_paths=args.resume,
         config=config,
+        linkedin_cache_path=linkedin_cache,
     )
 
     # Log results

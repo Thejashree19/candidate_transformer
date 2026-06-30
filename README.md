@@ -51,14 +51,23 @@ The CLI writes JSON to a file when `--output` is provided. If you omit `--output
 ### Default canonical output
 
 ```bash
-python main.py --csv sample_inputs/recruiter_export.csv --ats sample_inputs/ats_candidates.json --github-profiles sample_inputs/github_profiles.json --github-cache sample_inputs/github_cache.json --notes sample_inputs/recruiter_notes.txt --output sample_outputs/default_output.json
+python main.py --demo
 ```
 
 ### Custom projected output
+Give the structured and unstructured inputs separately in the CLI command.
+EXAMPLE Command:
+```bash
+python main.py --resume custom_resume.txt --github Thejashree19 --github-cache sample_inputs/github_cache.json --linkedin https://www.linkedin.com/in/thejashree-v-m-284ab3290/ --linkedin-cache sample_inputs/linkedin_cache.json
+```
 
 ```bash
 python main.py --csv sample_inputs/recruiter_export.csv --ats sample_inputs/ats_candidates.json --github-profiles sample_inputs/github_profiles.json --github-cache sample_inputs/github_cache.json --notes sample_inputs/recruiter_notes.txt --config config/custom_config_example.json --output sample_outputs/custom_output.json
 ```
+
+```bash
+python main.py --ats custom_ats.json --resume custom_resume.pdf
+ ```
 
 ### Print JSON to terminal
 

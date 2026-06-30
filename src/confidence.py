@@ -32,14 +32,18 @@ logger = logging.getLogger(__name__)
 
 _SOURCE_RELIABILITY: dict[str, float] = {
     SourceType.ATS_JSON.value: 0.95,
+    SourceType.LINKEDIN.value: 0.90,
     SourceType.RECRUITER_CSV.value: 0.85,
+    SourceType.RESUME.value: 0.85,
     SourceType.GITHUB.value: 0.70,
     SourceType.RECRUITER_NOTES.value: 0.40,
 }
 
 _SOURCE_PRIORITY_ORDER: list[str] = [
     SourceType.ATS_JSON.value,
+    SourceType.LINKEDIN.value,
     SourceType.RECRUITER_CSV.value,
+    SourceType.RESUME.value,
     SourceType.GITHUB.value,
     SourceType.RECRUITER_NOTES.value,
 ]

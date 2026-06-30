@@ -36,7 +36,7 @@ _PHONE_RE = re.compile(
     r"""
     (?<!\d)                       # not preceded by a digit
     (?:
-        \+?\d{1,3}[\s.-]?        # optional country code
+        \(?\+?\d{1,3}\)?[\s.-]?   # optional country code
     )?
     \(?\d{2,4}\)?[\s.-]?         # area code
     \d{3,4}[\s.-]?               # exchange

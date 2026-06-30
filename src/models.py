@@ -24,6 +24,8 @@ class SourceType(str, Enum):
     ATS_JSON = "ats_json"
     GITHUB = "github"
     RECRUITER_NOTES = "recruiter_notes"
+    LINKEDIN = "linkedin"
+    RESUME = "resume"
 
 
 class SourceStatus(str, Enum):

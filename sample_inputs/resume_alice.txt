@@ -1,0 +1,26 @@
+ALICE JOHNSON
+San Francisco, CA
+(650) 555-0101
+alice.j@personal.com
+
+PROFESSIONAL EXPERIENCE
+
+TechCorp Inc.
+Staff Engineer - AI Platform
+June 2021 - Present
+- Led the AI platform team to build scalable machine learning infrastructure.
+- Designed distributed training systems for LLMs.
+
+DataSystems LLC
+Senior Software Engineer
+Jan 2018 - May 2021
+- Backend services in Python and Go.
+- Implemented robust ETL pipelines handling 10TB of daily events.
+
+SKILLS
+Python, Go, Machine Learning, TensorFlow, Kubernetes, System Design, JavaScript, React
+
+EDUCATION
+Stanford University
+Bachelor of Science in Computer Science
+Graduated from Stanford University in 2016

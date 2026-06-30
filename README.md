@@ -39,7 +39,8 @@ python app.py
 ```
 2. Open your web browser and navigate to: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 3. Upload your CSV, ATS JSON, Notes, and/or Resume files.
-4. Click "Transform Data" to process the candidates and view the canonical JSON output and confidence score carousel.
+4. Click "Transform Candidates" to process the candidates. You will see the canonical JSON output on the right.
+5. Click "Download JSON" to instantly download the results to your computer.
 ## Running the CLI Pipeline
 The CLI writes JSON to a file when `--output` is provided. If you omit `--output`, the JSON is printed to stdout.
 ### Default canonical output
@@ -122,5 +123,4 @@ python -m pytest -q
 ## Notes
 - The repo is designed to run the same way on Windows, macOS, and Linux.
 - The sample inputs in `sample_inputs/` are enough to reproduce the bundled outputs.
-- Invalid source values are dropped rather than invented.
 - Invalid source values are dropped rather than invented.

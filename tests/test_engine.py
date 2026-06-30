@@ -133,13 +133,13 @@ class TestCandidateMerger:
                 full_name="Alice",
                 emails=["alice@test.com"],
                 skills=[
-                    RawSkill(name="Python", source=SourceType.GITHUB,
-                             method=ExtractionMethod.API_FETCH),
-                    RawSkill(name="Docker", source=SourceType.GITHUB,
-                             method=ExtractionMethod.API_FETCH),
+                    RawSkill(name="Python", source=SourceType.ATS_JSON,
+                             method=ExtractionMethod.FIELD_MAPPING),
+                    RawSkill(name="Docker", source=SourceType.ATS_JSON,
+                             method=ExtractionMethod.FIELD_MAPPING),
                 ],
-                source_type=SourceType.GITHUB,
-                extraction_method=ExtractionMethod.API_FETCH,
+                source_type=SourceType.ATS_JSON,
+                extraction_method=ExtractionMethod.FIELD_MAPPING,
             ),
         ]
         profiles = merger.match_and_merge(candidates)
@@ -332,7 +332,7 @@ class TestOutputProjector:
             phones=["(415) 555-2671"],
             location=Location(city="San Francisco", region="California", country="US"),
             skills=[
-                CanonicalSkill(name="reactjs", confidence=0.7, sources=["github"]),
+                CanonicalSkill(name="reactjs", confidence=0.7, sources=["ats_json"]),
             ],
             experience=[
                 Experience(company="TechCorp", title="Engineer", start="Jan 2020", end=None),

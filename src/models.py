@@ -22,9 +22,7 @@ class SourceType(str, Enum):
     """Enumeration of supported data source types."""
     RECRUITER_CSV = "recruiter_csv"
     ATS_JSON = "ats_json"
-    GITHUB = "github"
     RECRUITER_NOTES = "recruiter_notes"
-    LINKEDIN = "linkedin"
     RESUME = "resume"
 
 
@@ -108,8 +106,6 @@ class RawCandidate(BaseModel):
     emails: list[str] = Field(default_factory=list)
     phones: list[str] = Field(default_factory=list)
     location_raw: Optional[str] = None
-    linkedin_url: Optional[str] = None
-    github_url: Optional[str] = None
     portfolio_url: Optional[str] = None
     other_links: list[str] = Field(default_factory=list)
     headline: Optional[str] = None
@@ -138,8 +134,6 @@ class Location(BaseModel):
 
 class Links(BaseModel):
     """Candidate's web presence."""
-    linkedin: Optional[str] = None
-    github: Optional[str] = None
     portfolio: Optional[str] = None
     other: list[str] = Field(default_factory=list)
 

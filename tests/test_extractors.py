@@ -16,7 +16,6 @@ from src.models import (
 )
 from src.extractors.csv_extractor import CSVExtractor
 from src.extractors.ats_extractor import ATSExtractor
-from src.extractors.github_extractor import GitHubExtractor
 from src.extractors.notes_extractor import NotesExtractor
 
 
@@ -138,19 +137,6 @@ class TestATSExtractor:
         assert len(result[0].experience) == 1
         assert result[0].experience[0].company == "TechCorp"
 
-    def test_social_profiles_flat_dict(self):
-        """Handle {"linkedin": "url", "github": "url"} format."""
-        data = {
-            "applicant_name": "Alice",
-            "social_profiles": {
-                "linkedin": "https://linkedin.com/in/alice",
-                "github": "https://github.com/alice",
-            },
-        }
-        result = ATSExtractor().extract(self._make_envelope(data))
-        assert result[0].linkedin_url == "https://linkedin.com/in/alice"
-        assert result[0].github_url == "https://github.com/alice"
-
     def test_empty_data(self):
         envelope = self._make_envelope({})
         result = ATSExtractor().extract(envelope)
@@ -161,85 +147,6 @@ class TestATSExtractor:
         result = ATSExtractor().extract(self._make_envelope(data))
         assert result[0].source_type == SourceType.ATS_JSON
 
-
-# ═══════════════════════════════════════════════════════════════════════
-# GitHub Extractor
-# ═══════════════════════════════════════════════════════════════════════
-
-class TestGitHubExtractor:
-    """Tests for the GitHub extractor (using cached data)."""
-
-    def _make_cached_envelope(self) -> SourceEnvelope:
-        return SourceEnvelope(
-            source_type=SourceType.GITHUB,
-            path="github://testuser",
-            raw_data={
-                "profile": {
-                    "login": "testuser",
-                    "name": "Test User",
-                    "bio": "Software Developer",
-                    "location": "San Francisco",
-                    "email": "test@github.com",
-                    "company": "TestCo",
-                    "blog": "https://test.dev",
-                    "html_url": "https://github.com/testuser",
-                },
-                "repos": [
-                    {
-                        "name": "my-project",
-                        "language": "Python",
-                        "topics": ["machine-learning", "api"],
-                        "fork": False,
-                        "stargazers_count": 50,
-                    },
-                    {
-                        "name": "web-app",
-                        "language": "TypeScript",
-                        "topics": ["react"],
-                        "fork": False,
-                        "stargazers_count": 30,
-                    },
-                    {
-                        "name": "forked-repo",
-                        "language": "JavaScript",
-                        "topics": [],
-                        "fork": True,
-                        "stargazers_count": 0,
-                    },
-                ],
-            },
-        )
-
-    def test_cached_profile_extraction(self):
-        extractor = GitHubExtractor()
-        result = extractor.extract(self._make_cached_envelope())
-        assert len(result) == 1
-        candidate = result[0]
-        assert candidate.full_name == "Test User"
-        assert candidate.github_url == "https://github.com/testuser"
-        assert candidate.headline == "Software Developer"
-
-    def test_skills_from_repos(self):
-        extractor = GitHubExtractor()
-        result = extractor.extract(self._make_cached_envelope())
-        skill_names = [s.name for s in result[0].skills]
-        assert "Python" in skill_names
-        assert "TypeScript" in skill_names
-
-    def test_source_type(self):
-        result = GitHubExtractor().extract(self._make_cached_envelope())
-        assert result[0].source_type == SourceType.GITHUB
-        assert result[0].extraction_method == ExtractionMethod.API_FETCH
-
-    def test_malformed_cache(self):
-        envelope = SourceEnvelope(
-            source_type=SourceType.GITHUB,
-            path="github://bad",
-            raw_data={"profile": "not a dict", "repos": []},
-        )
-        result = GitHubExtractor().extract(envelope)
-        assert len(result) == 0
-        assert envelope.status == SourceStatus.MALFORMED
 
 
 # ═══════════════════════════════════════════════════════════════════════

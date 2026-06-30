@@ -2,7 +2,7 @@
 import sys
 sys.path.insert(0, ".")
 
-from src.extractors import BaseExtractor, CSVExtractor, ATSExtractor, GitHubExtractor, NotesExtractor
+from src.extractors import BaseExtractor, CSVExtractor, ATSExtractor, NotesExtractor
 from src.models import SourceEnvelope, SourceType, SourceStatus
 
 def test_csv():
@@ -14,21 +14,13 @@ def test_csv():
 def test_ats():
     data = {"applicant_name": "Bob", "contact_email": "bob@x.com", "tech_stack": ["Java", "K8s"],
             "work_history": [{"employer": "Acme", "role": "SWE", "start_date": "2020-01"}],
-            "education_history": [{"school": "MIT", "degree_type": "BS", "major": "CS", "graduation_year": 2019}],
-            "social_profiles": [{"type": "linkedin", "url": "https://linkedin.com/in/bob"}]}
+            "work_history": [{"employer": "Acme", "role": "SWE", "start_date": "2020-01"}],
+            "education_history": [{"school": "MIT", "degree_type": "BS", "major": "CS", "graduation_year": 2019}]}
     e = SourceEnvelope(source_type=SourceType.ATS_JSON, raw_data=data)
     c = ATSExtractor().safe_extract(e)
-    assert len(c) == 1 and c[0].full_name == "Bob" and c[0].linkedin_url == "https://linkedin.com/in/bob"
+    assert len(c) == 1 and c[0].full_name == "Bob"
     print("  ATS  ✓")
 
-def test_github_cached():
-    cached = {"profile": {"name": "Octocat", "email": "octo@gh.com", "bio": "I build things",
-                           "location": "SF", "company": "GitHub", "blog": "octocat.dev", "html_url": "https://github.com/octocat"},
-              "repos": [{"language": "Python", "topics": ["ml"]}, {"language": "Go", "topics": []}]}
-    e = SourceEnvelope(source_type=SourceType.GITHUB, raw_data=cached)
-    c = GitHubExtractor().safe_extract(e)
-    assert len(c) == 1 and c[0].full_name == "Octocat" and len(c[0].skills) == 3
-    print("  GitHub (cached)  ✓")
 
 def test_notes():
     text = "Candidate: Jane Doe\njane@example.com\nPhone: 555-123-4567\nSkills: Python, React, AWS\nWorks at Google\n10 years of experience\nBS in CS from Stanford\nBased in San Francisco"
@@ -46,7 +38,7 @@ if __name__ == "__main__":
     print("Running extractor smoke tests...")
     test_csv()
     test_ats()
-    test_github_cached()
+
     test_notes()
     test_safe_extract_on_bad_status()
     print("All tests passed!")

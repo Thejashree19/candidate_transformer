@@ -3,7 +3,7 @@
 Multi-Source Candidate Data Transformer — CLI Entry Point.
 
 Usage:
-    python main.py --csv data.csv --ats data.json --github user1 user2 --notes notes.txt
+    python main.py --csv data.csv --ats data.json --notes notes.txt
     python main.py --csv data.csv --config custom_config.json --output result.json
     python main.py --help
 
@@ -51,33 +51,6 @@ def load_config(config_path: str | None) -> OutputConfig:
         sys.exit(1)
 
 
-def load_github_usernames(
-    usernames: list[str] | None,
-    profiles_path: str | None,
-) -> list[str] | None:
-    """
-    Build the list of GitHub usernames from CLI args and/or a JSON file.
-
-    The profiles JSON file should have: {"profiles": ["user1", "user2"]}
-    """
-    result = []
-
-    if usernames:
-        result.extend(usernames)
-
-    if profiles_path:
-        try:
-            with open(profiles_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            if isinstance(data, dict) and "profiles" in data:
-                result.extend(data["profiles"])
-            elif isinstance(data, list):
-                result.extend(data)
-        except Exception as e:
-            logging.warning("Failed to load GitHub profiles from %s: %s", profiles_path, e)
-
-    return result if result else None
-
 
 def parse_args() -> argparse.Namespace:
     """Parse command-line arguments."""
@@ -85,7 +58,7 @@ def parse_args() -> argparse.Namespace:
         prog="candidate-transformer",
         description=(
             "Multi-Source Candidate Data Transformer\n"
-            "Ingests candidate data from CSV, ATS JSON, GitHub, and recruiter notes.\n"
+            "Ingests candidate data from CSV, ATS JSON, and recruiter notes.\n"
             "Merges, normalizes, and outputs clean canonical profiles."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -93,7 +66,7 @@ def parse_args() -> argparse.Namespace:
             "Examples:\n"
             "  python main.py --csv recruiter.csv --ats ats.json --output profiles.json\n"
             "  python main.py --csv recruiter.csv --config custom.json --output result.json\n"
-            "  python main.py --csv recruiter.csv --github torvalds --notes notes.txt\n"
+            "  python main.py --csv recruiter.csv --notes notes.txt\n"
         ),
     )
 
@@ -108,33 +81,6 @@ def parse_args() -> argparse.Namespace:
         "--ats",
         metavar="PATH",
         help="Path to ATS JSON blob file",
-    )
-    sources.add_argument(
-        "--github",
-        metavar="USERNAME",
-        nargs="+",
-        help="GitHub username(s) to fetch profiles for",
-    )
-    sources.add_argument(
-        "--github-profiles",
-        metavar="PATH",
-        help='Path to JSON file with GitHub usernames: {"profiles": ["user1"]}',
-    )
-    sources.add_argument(
-        "--github-cache",
-        metavar="PATH",
-        help="Path to cached GitHub API responses (for offline/deterministic use)",
-    )
-    sources.add_argument(
-        "--linkedin",
-        metavar="URL",
-        nargs="+",
-        help="LinkedIn URL(s) or username(s)",
-    )
-    sources.add_argument(
-        "--linkedin-cache",
-        metavar="PATH",
-        help="Path to cached LinkedIn API responses",
     )
     sources.add_argument(
         "--notes",
@@ -194,18 +140,14 @@ def parse_args() -> argparse.Namespace:
     if args.demo:
         args.csv = "sample_inputs/recruiter_export.csv"
         args.ats = "sample_inputs/ats_candidates.json"
-        args.github = ["alicejohnson", "bobchen"]
-        args.github_cache = "sample_inputs/github_cache.json"
-        args.linkedin = ["https://linkedin.com/in/alicejohnson", "https://linkedin.com/in/bobchen"]
-        args.linkedin_cache = "sample_inputs/linkedin_cache.json"
         args.notes = "sample_inputs/recruiter_notes.txt"
         args.resume = ["sample_inputs/resume_alice.txt", "sample_inputs/resume_bob.pdf"]
 
     # Validate: at least one source required
-    if not any([args.csv, args.ats, args.github, args.github_profiles, args.linkedin, args.notes, args.resume]):
+    if not any([args.csv, args.ats, args.notes, args.resume]):
         parser.error(
             "At least one input source is required "
-            "(--csv, --ats, --github, --github-profiles, --linkedin, --notes, --resume, or --demo)"
+            "(--csv, --ats, --notes, --resume, or --demo)"
         )
 
     return args
@@ -226,27 +168,12 @@ def main() -> None:
     config_label = args.config if args.config else "default (full canonical)"
     logger.info("Output config: %s", config_label)
 
-    # Build GitHub usernames list
-    github_usernames = load_github_usernames(args.github, args.github_profiles)
-
-    # Determine caches
-    github_cache = args.github_cache if hasattr(args, "github_cache") else None
-    linkedin_cache = args.linkedin_cache if hasattr(args, "linkedin_cache") else None
-
     # Log sources
     logger.info("─── Input Sources ───")
     if args.csv:
         logger.info("  CSV:     %s", args.csv)
     if args.ats:
         logger.info("  ATS:     %s", args.ats)
-    if github_usernames:
-        logger.info("  GitHub:  %s", ", ".join(github_usernames))
-    if github_cache:
-        logger.info("  GH Cache: %s", github_cache)
-    if args.linkedin:
-        logger.info("  LinkedIn: %s", ", ".join(args.linkedin))
-    if linkedin_cache:
-        logger.info("  LI Cache: %s", linkedin_cache)
     if args.notes:
         logger.info("  Notes:   %s", args.notes)
     if args.resume:
@@ -254,16 +181,13 @@ def main() -> None:
     logger.info("─────────────────────")
 
     # Run pipeline
-    pipeline = Pipeline(github_cache_path=github_cache)
+    pipeline = Pipeline()
     result = pipeline.run(
         csv_path=args.csv,
         ats_path=args.ats,
-        github_usernames=github_usernames,
-        linkedin_urls=args.linkedin,
         notes_path=args.notes,
         resume_paths=args.resume,
         config=config,
-        linkedin_cache_path=linkedin_cache,
     )
 
     # Log results

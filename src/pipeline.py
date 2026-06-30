@@ -26,8 +26,6 @@ from src.models import (
 from src.extractors.base import BaseExtractor
 from src.extractors.csv_extractor import CSVExtractor
 from src.extractors.ats_extractor import ATSExtractor
-from src.extractors.github_extractor import GitHubExtractor
-from src.extractors.linkedin_extractor import LinkedInExtractor
 from src.extractors.notes_extractor import NotesExtractor
 from src.extractors.resume_extractor import ResumeExtractor
 from src.merger import CandidateMerger
@@ -65,49 +63,20 @@ class Pipeline:
         self.extractors: dict[SourceType, BaseExtractor] = {
             SourceType.RECRUITER_CSV: CSVExtractor(),
             SourceType.ATS_JSON: ATSExtractor(),
-            SourceType.GITHUB: GitHubExtractor(),
-            SourceType.LINKEDIN: LinkedInExtractor(),
             SourceType.RECRUITER_NOTES: NotesExtractor(),
             SourceType.RESUME: ResumeExtractor(),
         }
         self.merger = CandidateMerger()
         self.confidence_scorer = ConfidenceScorer()
         self.validator = OutputValidator()
-        self.github_cache: dict[str, Any] = {}
-        self.linkedin_cache: dict[str, Any] = {}
-
-        if github_cache_path:
-            self._load_github_cache(github_cache_path)
-
-    def _load_github_cache(self, path: str) -> None:
-        """Load cached GitHub API responses from a JSON file."""
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                self.github_cache = json.load(f)
-            logger.info("Loaded GitHub cache with %d profiles", len(self.github_cache))
-        except Exception as e:
-            logger.warning("Failed to load GitHub cache from %s: %s", path, e)
-
-    def _load_linkedin_cache(self, path: str) -> None:
-        """Load cached LinkedIn API responses from a JSON file."""
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                self.linkedin_cache = json.load(f)
-            logger.info("Loaded LinkedIn cache with %d profiles", len(self.linkedin_cache))
-        except Exception as e:
-            logger.warning("Failed to load LinkedIn cache from %s: %s", path, e)
 
     def run(
         self,
         csv_path: Optional[str] = None,
         ats_path: Optional[str] = None,
-        github_usernames: Optional[list[str]] = None,
-        linkedin_urls: Optional[list[str]] = None,
         notes_path: Optional[str] = None,
         resume_paths: Optional[list[str]] = None,
         config: Optional[OutputConfig] = None,
-        github_cache_path: Optional[str] = None,
-        linkedin_cache_path: Optional[str] = None,
     ) -> PipelineResult:
         """
         Run the full pipeline end-to-end.
@@ -115,13 +84,9 @@ class Pipeline:
         Args:
             csv_path: Path to recruiter CSV file.
             ats_path: Path to ATS JSON file.
-            github_usernames: List of GitHub usernames to fetch.
-            linkedin_urls: List of LinkedIn URLs (or usernames) to fetch.
             notes_path: Path to recruiter notes text file.
             resume_paths: List of paths to resume files (PDF, DOCX, TXT).
             config: Output configuration. Defaults to full canonical schema.
-            github_cache_path: Path to cached GitHub responses (overrides init cache).
-            linkedin_cache_path: Path to cached LinkedIn responses.
 
         Returns:
             PipelineResult with profiles, source statuses, warnings, and errors.
@@ -129,17 +94,11 @@ class Pipeline:
         if config is None:
             config = OutputConfig.default()
 
-        if github_cache_path:
-            self._load_github_cache(github_cache_path)
-
-        if linkedin_cache_path:
-            self._load_linkedin_cache(linkedin_cache_path)
-
         result = PipelineResult()
 
         # ─── Stage 1: Detect & Ingest ───────────────────────────────
         envelopes = self._detect_and_ingest(
-            csv_path, ats_path, github_usernames, linkedin_urls, notes_path, resume_paths
+            csv_path, ats_path, notes_path, resume_paths
         )
 
         if not envelopes:
@@ -229,8 +188,6 @@ class Pipeline:
         self,
         csv_path: Optional[str],
         ats_path: Optional[str],
-        github_usernames: Optional[list[str]],
-        linkedin_urls: Optional[list[str]],
         notes_path: Optional[str],
         resume_paths: Optional[list[str]],
     ) -> list[SourceEnvelope]:
@@ -251,34 +208,6 @@ class Pipeline:
         if ats_path:
             envelope = self._ingest_json(ats_path, SourceType.ATS_JSON)
             envelopes.append(envelope)
-
-        # GitHub sources (one envelope per username)
-        if github_usernames:
-            for username in github_usernames:
-                envelope = SourceEnvelope(
-                    source_type=SourceType.GITHUB,
-                    path=f"github://{username}",
-                )
-                if username.lower() in self.github_cache:
-                    envelope.raw_data = self.github_cache[username.lower()]
-                else:
-                    envelope.raw_data = {"username": username}
-                envelopes.append(envelope)
-
-        # LinkedIn sources (one envelope per URL/username)
-        if linkedin_urls:
-            for url in linkedin_urls:
-                envelope = SourceEnvelope(
-                    source_type=SourceType.LINKEDIN,
-                    path=url,
-                )
-                # Simple extraction of username from URL for cache lookup
-                username = url.strip("/").split("/")[-1].lower()
-                if username in self.linkedin_cache:
-                    envelope.raw_data = self.linkedin_cache[username]
-                else:
-                    envelope.raw_data = url
-                envelopes.append(envelope)
 
         # Recruiter notes source
         if notes_path:

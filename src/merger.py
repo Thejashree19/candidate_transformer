@@ -49,7 +49,7 @@ _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 _SOURCE_PRIORITY: dict[SourceType, int] = {
     SourceType.ATS_JSON: 1,
     SourceType.RECRUITER_CSV: 2,
-    SourceType.GITHUB: 3,
+
     SourceType.RECRUITER_NOTES: 4,
 }
 
@@ -401,10 +401,6 @@ class CandidateMerger:
         links = Links()
         other_links_set: set[str] = set()
         for c in cluster_sorted:
-            if c.linkedin_url and not links.linkedin:
-                links.linkedin = c.linkedin_url.strip()
-            if c.github_url and not links.github:
-                links.github = c.github_url.strip()
             if c.portfolio_url and not links.portfolio:
                 links.portfolio = c.portfolio_url.strip()
             for link in c.other_links:

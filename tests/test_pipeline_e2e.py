@@ -38,13 +38,10 @@ class TestPipelineE2E:
 
     def test_full_pipeline_default_config(self):
         """Run the complete pipeline with default config and validate output."""
-        pipeline = Pipeline(
-            github_cache_path=os.path.join(_sample_dir(), "github_cache.json")
-        )
+        pipeline = Pipeline()
         result = pipeline.run(
             csv_path=os.path.join(_sample_dir(), "recruiter_export.csv"),
             ats_path=os.path.join(_sample_dir(), "ats_candidates.json"),
-            github_usernames=["alicejohnson", "evelynpark"],
             notes_path=os.path.join(_sample_dir(), "recruiter_notes.txt"),
         )
 
@@ -75,13 +72,10 @@ class TestPipelineE2E:
             ],
         )
 
-        pipeline = Pipeline(
-            github_cache_path=os.path.join(_sample_dir(), "github_cache.json")
-        )
+        pipeline = Pipeline()
         result = pipeline.run(
             csv_path=os.path.join(_sample_dir(), "recruiter_export.csv"),
             ats_path=os.path.join(_sample_dir(), "ats_candidates.json"),
-            github_usernames=["alicejohnson", "evelynpark"],
             notes_path=os.path.join(_sample_dir(), "recruiter_notes.txt"),
             config=config,
         )
@@ -120,17 +114,14 @@ class TestPipelineE2E:
 
     def test_merge_cross_source(self):
         """Verify that candidates appearing in multiple sources are merged."""
-        pipeline = Pipeline(
-            github_cache_path=os.path.join(_sample_dir(), "github_cache.json")
-        )
+        pipeline = Pipeline()
         result = pipeline.run(
             csv_path=os.path.join(_sample_dir(), "recruiter_export.csv"),
             ats_path=os.path.join(_sample_dir(), "ats_candidates.json"),
-            github_usernames=["alicejohnson", "evelynpark"],
             notes_path=os.path.join(_sample_dir(), "recruiter_notes.txt"),
         )
 
-        # Alice should appear in CSV, ATS, GitHub, and Notes
+        # Alice should appear in CSV, ATS, and Notes
         # but should be merged into ONE profile
         alice_profiles = [
             p for p in result.profiles
@@ -143,9 +134,7 @@ class TestPipelineE2E:
 
     def test_confidence_scores_present(self):
         """All profiles should have confidence scores between 0 and 1."""
-        pipeline = Pipeline(
-            github_cache_path=os.path.join(_sample_dir(), "github_cache.json")
-        )
+        pipeline = Pipeline()
         result = pipeline.run(
             csv_path=os.path.join(_sample_dir(), "recruiter_export.csv"),
             ats_path=os.path.join(_sample_dir(), "ats_candidates.json"),
@@ -158,9 +147,7 @@ class TestPipelineE2E:
 
     def test_provenance_tracked(self):
         """Profiles should include provenance records."""
-        pipeline = Pipeline(
-            github_cache_path=os.path.join(_sample_dir(), "github_cache.json")
-        )
+        pipeline = Pipeline()
         result = pipeline.run(
             csv_path=os.path.join(_sample_dir(), "recruiter_export.csv"),
             ats_path=os.path.join(_sample_dir(), "ats_candidates.json"),

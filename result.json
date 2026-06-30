@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "total_profiles": 0,
+    "sources_processed": [
+      {
+        "type": "recruiter_csv",
+        "path": "my_data.csv",
+        "status": "failed"
+      },
+      {
+        "type": "ats_json",
+        "path": "my_ats.json",
+        "status": "failed"
+      },
+      {
+        "type": "recruiter_notes",
+        "path": "my_notes.txt",
+        "status": "failed"
+      }
+    ],
+    "warnings": [
+      "No candidates extracted from any source."
+    ],
+    "errors": []
+  },
+  "profiles": []
+}

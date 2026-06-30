@@ -1,0 +1,152 @@
+{
+  "alicejohnson": {
+    "profile": {
+      "login": "alicejohnson",
+      "id": 12345678,
+      "name": "Alice Johnson",
+      "company": "TechCorp",
+      "blog": "https://alicejohnson.dev",
+      "location": "San Francisco, CA",
+      "email": "alice.johnson@email.com",
+      "bio": "Senior Software Engineer passionate about AI/ML and building scalable systems. Python & React enthusiast.",
+      "twitter_username": null,
+      "public_repos": 24,
+      "followers": 156,
+      "following": 42,
+      "html_url": "https://github.com/alicejohnson",
+      "created_at": "2016-09-15T10:30:00Z",
+      "updated_at": "2026-06-01T08:00:00Z"
+    },
+    "repos": [
+      {
+        "name": "ml-pipeline-framework",
+        "full_name": "alicejohnson/ml-pipeline-framework",
+        "html_url": "https://github.com/alicejohnson/ml-pipeline-framework",
+        "description": "A scalable ML pipeline framework for production deployments",
+        "fork": false,
+        "language": "Python",
+        "topics": ["machine-learning", "pipeline", "mlops", "tensorflow"],
+        "stargazers_count": 342,
+        "forks_count": 45,
+        "pushed_at": "2026-05-20T14:30:00Z"
+      },
+      {
+        "name": "react-dashboard-ui",
+        "full_name": "alicejohnson/react-dashboard-ui",
+        "html_url": "https://github.com/alicejohnson/react-dashboard-ui",
+        "description": "Modern React dashboard with real-time analytics",
+        "fork": false,
+        "language": "TypeScript",
+        "topics": ["react", "dashboard", "typescript", "analytics"],
+        "stargazers_count": 128,
+        "forks_count": 18,
+        "pushed_at": "2026-04-10T09:00:00Z"
+      },
+      {
+        "name": "docker-k8s-templates",
+        "full_name": "alicejohnson/docker-k8s-templates",
+        "html_url": "https://github.com/alicejohnson/docker-k8s-templates",
+        "description": "Production-ready Docker and Kubernetes templates",
+        "fork": false,
+        "language": "Dockerfile",
+        "topics": ["docker", "kubernetes", "devops"],
+        "stargazers_count": 89,
+        "forks_count": 12,
+        "pushed_at": "2026-03-15T11:00:00Z"
+      },
+      {
+        "name": "awesome-ml-papers",
+        "full_name": "alicejohnson/awesome-ml-papers",
+        "html_url": "https://github.com/alicejohnson/awesome-ml-papers",
+        "description": "Curated list of ML papers I've read",
+        "fork": false,
+        "language": null,
+        "topics": ["machine-learning", "research", "papers"],
+        "stargazers_count": 67,
+        "forks_count": 8,
+        "pushed_at": "2026-02-01T16:00:00Z"
+      },
+      {
+        "name": "forked-repo",
+        "full_name": "alicejohnson/forked-repo",
+        "html_url": "https://github.com/alicejohnson/forked-repo",
+        "description": "A forked repository",
+        "fork": true,
+        "language": "JavaScript",
+        "topics": [],
+        "stargazers_count": 0,
+        "forks_count": 0,
+        "pushed_at": "2025-12-01T10:00:00Z"
+      }
+    ]
+  },
+  "evelynpark": {
+    "profile": {
+      "login": "evelynpark",
+      "id": 87654321,
+      "name": "Evelyn Park",
+      "company": "TechCorp",
+      "blog": "",
+      "location": "San Francisco",
+      "email": null,
+      "bio": "ML Engineer | NLP & Computer Vision | PhD from MIT | Building intelligent systems",
+      "twitter_username": "evelynpark_ml",
+      "public_repos": 15,
+      "followers": 230,
+      "following": 55,
+      "html_url": "https://github.com/evelynpark",
+      "created_at": "2018-06-01T08:00:00Z",
+      "updated_at": "2026-06-15T12:00:00Z"
+    },
+    "repos": [
+      {
+        "name": "transformer-nlp-toolkit",
+        "full_name": "evelynpark/transformer-nlp-toolkit",
+        "html_url": "https://github.com/evelynpark/transformer-nlp-toolkit",
+        "description": "Custom transformer architectures for NLP tasks",
+        "fork": false,
+        "language": "Python",
+        "topics": ["nlp", "transformers", "deep-learning", "pytorch"],
+        "stargazers_count": 512,
+        "forks_count": 78,
+        "pushed_at": "2026-06-10T14:00:00Z"
+      },
+      {
+        "name": "cv-object-detection",
+        "full_name": "evelynpark/cv-object-detection",
+        "html_url": "https://github.com/evelynpark/cv-object-detection",
+        "description": "Real-time object detection models with TensorFlow",
+        "fork": false,
+        "language": "Python",
+        "topics": ["computer-vision", "tensorflow", "object-detection"],
+        "stargazers_count": 198,
+        "forks_count": 32,
+        "pushed_at": "2026-05-01T10:00:00Z"
+      },
+      {
+        "name": "ml-experiment-tracker",
+        "full_name": "evelynpark/ml-experiment-tracker",
+        "html_url": "https://github.com/evelynpark/ml-experiment-tracker",
+        "description": "Lightweight experiment tracking for ML research",
+        "fork": false,
+        "language": "Python",
+        "topics": ["mlops", "experiment-tracking"],
+        "stargazers_count": 76,
+        "forks_count": 11,
+        "pushed_at": "2026-04-15T08:00:00Z"
+      },
+      {
+        "name": "jupyter-gpu-setup",
+        "full_name": "evelynpark/jupyter-gpu-setup",
+        "html_url": "https://github.com/evelynpark/jupyter-gpu-setup",
+        "description": "Docker setup for GPU-accelerated Jupyter notebooks",
+        "fork": false,
+        "language": "Shell",
+        "topics": ["jupyter", "docker", "gpu"],
+        "stargazers_count": 34,
+        "forks_count": 5,
+        "pushed_at": "2026-01-20T16:00:00Z"
+      }
+    ]
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "metadata": {
+    "total_profiles": 7,
+    "sources_processed": [
+      {
+        "type": "recruiter_csv",
+        "path": "sample_inputs/recruiter_export.csv",
+        "status": "ok"
+      },
+      {
+        "type": "ats_json",
+        "path": "sample_inputs/ats_candidates.json",
+        "status": "ok"
+      },
+      {
+        "type": "github",
+        "path": "github://alicejohnson",
+        "status": "ok"
+      },
+      {
+        "type": "github",
+        "path": "github://evelynpark",
+        "status": "ok"
+      },
+      {
+        "type": "recruiter_notes",
+        "path": "sample_inputs/recruiter_notes.txt",
+        "status": "ok"
+      }
+    ],
+    "warnings": [],
+    "errors": []
+  },
+  "profiles": [
+    {
+      "full_name": "Alice M. Johnson",
+      "primary_email": "alice.johnson@email.com",
+      "phone": "+16505550101",
+      "city": "San Francisco",
+      "country": "US",
+      "current_title": "Senior Software Engineer",
+      "current_company": "TechCorp Inc.",
+      "skills": [
+        "Python",
+        "JavaScript",
+        "React",
+        "TensorFlow",
+        "Docker",
+        "Kubernetes",
+        "AWS",
+        "Machine Learning",
+        "pipeline",
+        "mlops",
+        "TypeScript",
+        "dashboard",
+        "analytics",
+        "DevOps",
+        "research",
+        "papers",
+        "Deep Learning"
+      ],
+      "years_experience": 8.0,
+      "headline": "Staff Engineer - AI Platform",
+      "overall_confidence": 0.7844
+    },
+    {
+      "full_name": "Robert Chen",
+      "primary_email": "bob.chen@techmail.com",
+      "phone": "+14085550199",
+      "city": "San Jose",
+      "country": "US",
+      "current_title": "Senior Data Engineer",
+      "current_company": "DataFlow Inc.",
+      "skills": [
+        "Python",
+        "SQL",
+        "Apache Spark",
+        "AWS",
+        "Apache Kafka",
+        "Airflow",
+        "dbt",
+        "ETL",
+        "Data Warehousing",
+        "the Apache",
+        "AWS well — has experience with Redshift",
+        "S3"
+      ],
+      "years_experience": 7.0,
+      "headline": "Staff Data Engineer",
+      "overall_confidence": 0.7594
+    },
+    {
+      "full_name": "Charlie Kumar",
+      "primary_email": "charlie.k@gmail.com",
+      "phone": "+919876543210",
+      "city": "Bangalore",
+      "country": "IN",
+      "current_title": null,
+      "current_company": null,
+      "skills": [
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Node.js",
+        "MongoDB",
+        "GraphQL"
+      ],
+      "years_experience": 4.0,
+      "headline": "Full Stack Developer at InnovateTech",
+      "overall_confidence": 0.6914
+    },
+    {
+      "full_name": "Diana Reyes",
+      "primary_email": "diana.reyes@outlook.com",
+      "phone": null,
+      "city": "Austin",
+      "country": "US",
+      "current_title": null,
+      "current_company": null,
+      "skills": [
+        "Kubernetes",
+        "Docker",
+        "Terraform",
+        "AWS",
+        "CI/CD",
+        "Python",
+        "Linux"
+      ],
+      "years_experience": 10.0,
+      "headline": "DevOps Lead at CloudScale",
+      "overall_confidence": 0.652
+    },
+    {
+      "full_name": "InvalidRow",
+      "primary_email": "not-an-email",
+      "phone": null,
+      "city": null,
+      "country": null,
+      "current_title": null,
+      "current_company": null,
+      "skills": null,
+      "years_experience": null,
+      "headline": null,
+      "overall_confidence": 0.79
+    },
+    {
+      "full_name": "Evelyn Park",
+      "primary_email": "evelyn.park@techcorp.com",
+      "phone": "+14155550188",
+      "city": "San Francisco",
+      "country": "US",
+      "current_title": "Senior ML Engineer",
+      "current_company": "TechCorp",
+      "skills": [
+        "Python",
+        "TensorFlow",
+        "PyTorch",
+        "Deep Learning",
+        "Natural Language Processing",
+        "Computer Vision",
+        "MLOps",
+        "Docker",
+        "transformers",
+        "computer-vision",
+        "object-detection",
+        "mlops",
+        "experiment-tracking",
+        "Shell",
+        "jupyter",
+        "gpu"
+      ],
+      "years_experience": 5.0,
+      "headline": "Lead ML Engineer",
+      "overall_confidence": 0.7594
+    },
+    {
+      "full_name": "Fatima Al-Rashid",
+      "primary_email": "fatima.r@globaltech.com",
+      "phone": "+442079460958",
+      "city": null,
+      "country": "GB",
+      "current_title": null,
+      "current_company": null,
+      "skills": [
+        "Java",
+        "Scala",
+        "Distributed Systems",
+        "Microservices",
+        "Kubernetes",
+        "System Design",
+        "Apache Kafka"
+      ],
+      "years_experience": 15.0,
+      "headline": null,
+      "overall_confidence": 0.4942
+    }
+  ]
+}

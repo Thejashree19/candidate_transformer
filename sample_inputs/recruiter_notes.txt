@@ -1,0 +1,54 @@
+Candidate: Alice Johnson
+Spoke with Alice today about the Staff Engineer role. She's very strong technically — 
+8+ years of experience primarily in Python and JavaScript. Currently leading the AI 
+platform team at TechCorp where she built ML pipelines handling millions of predictions 
+daily. Also experienced in React, Docker, Kubernetes, and AWS. 
+
+She mentioned she has a BS in Computer Science from Stanford (2016). Previously worked 
+at StartupXYZ doing full-stack dev. Very passionate about machine learning and has been 
+doing deep learning work on the side.
+
+Skills: Python, JavaScript, React, Machine Learning, Deep Learning, Docker, Kubernetes, AWS
+Location: San Francisco, CA
+Email: alice.j@personal.com
+Phone: (650) 555-0101
+LinkedIn: https://linkedin.com/in/alicejohnson
+
+Overall impression: Strong hire. Great communication skills, deep technical knowledge.
+Recommend moving to next round.
+
+---
+
+Candidate: Bob Chen
+Bob is a solid data engineer with 6-7 years of experience. Currently at DataFlow Inc. 
+working on real-time data pipelines. Very proficient in Python, SQL, and the Apache 
+ecosystem (Spark, Kafka). Also knows AWS well — has experience with Redshift, S3, 
+and Lambda.
+
+He has a Master's in Data Science from UC Berkeley. Seems interested in transitioning 
+to more ML-focused roles. Good cultural fit.
+
+Skills: Python, SQL, Apache Spark, Apache Kafka, AWS, ETL, Data Warehousing
+Located in San Jose, California
+Contact: bob.chen@techmail.com
+Phone: 408-555-0199
+
+Note: Bob mentioned he also goes by "Robert" in formal settings.
+
+---
+
+Candidate: Fatima Al-Rashid
+New candidate referral — haven't done full screen yet. 
+Got her resume from the hiring manager.
+
+Email: fatima.r@globaltech.com
+Phone: +44 20 7946 0958
+Based in London, UK
+Works at GlobalTech as a Principal Engineer
+15 years of experience in distributed systems
+
+Skills: Java, Scala, Distributed Systems, Microservices, Kubernetes, System Design, Apache Kafka
+Education: MSc Computer Science from Imperial College London
+
+LinkedIn: https://linkedin.com/in/fatimarashid
+Portfolio: https://fatimaalrashid.dev

@@ -1,0 +1,140 @@
+{
+  "candidates": [
+    {
+      "applicant_name": "Alice M. Johnson",
+      "contact_email": "alice.johnson@email.com",
+      "contact_phone": "650-555-0101",
+      "current_employer": "TechCorp Inc.",
+      "job_title": "Senior Software Engineer",
+      "applicant_location": "San Francisco, California, US",
+      "applied_position": "Staff Engineer - AI Platform",
+      "tech_stack": ["Python", "JS", "React", "TensorFlow", "Docker", "k8s", "AWS"],
+      "work_history": [
+        {
+          "employer": "TechCorp Inc.",
+          "role": "Senior Software Engineer",
+          "start_date": "March 2020",
+          "end_date": "Present",
+          "description": "Led AI platform team, built ML pipelines serving 10M+ predictions/day"
+        },
+        {
+          "employer": "StartupXYZ",
+          "role": "Software Engineer",
+          "start_date": "June 2018",
+          "end_date": "February 2020",
+          "description": "Full-stack development with React and Python microservices"
+        },
+        {
+          "employer": "BigTech Co",
+          "role": "Junior Developer",
+          "start_date": "August 2016",
+          "end_date": "May 2018",
+          "description": "Backend services in Java and Python"
+        }
+      ],
+      "education_history": [
+        {
+          "school": "Stanford University",
+          "degree_type": "Bachelor of Science",
+          "major": "Computer Science",
+          "graduation_year": 2016
+        }
+      ],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/alicejohnson",
+        "github": "https://github.com/alicejohnson",
+        "portfolio": "https://alicejohnson.dev"
+      },
+      "years_of_experience": 8
+    },
+    {
+      "applicant_name": "Robert Chen",
+      "contact_email": "bob.chen@techmail.com",
+      "contact_phone": "+1 (408) 555-0199",
+      "current_employer": "DataFlow Inc.",
+      "job_title": "Senior Data Engineer",
+      "applicant_location": "San Jose, CA",
+      "applied_position": "Staff Data Engineer",
+      "tech_stack": ["Python", "SQL", "Spark", "PySpark", "AWS", "Kafka", "Airflow", "dbt"],
+      "work_history": [
+        {
+          "employer": "DataFlow Inc.",
+          "role": "Senior Data Engineer",
+          "start_date": "Jan 2021",
+          "end_date": "Present",
+          "description": "Architected real-time data pipelines processing 500GB+ daily"
+        },
+        {
+          "employer": "Analytics Corp",
+          "role": "Data Engineer",
+          "start_date": "Jul 2019",
+          "end_date": "Dec 2020",
+          "description": "Built ETL pipelines and data warehouse on AWS Redshift"
+        }
+      ],
+      "education_history": [
+        {
+          "school": "UC Berkeley",
+          "degree_type": "Master of Science",
+          "major": "Data Science",
+          "graduation_year": 2019
+        },
+        {
+          "school": "UCLA",
+          "degree_type": "Bachelor of Science",
+          "major": "Statistics",
+          "graduation_year": 2017
+        }
+      ],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/bobchen"
+      },
+      "years_of_experience": 7
+    },
+    {
+      "applicant_name": "Evelyn Park",
+      "contact_email": "evelyn.park@techcorp.com",
+      "contact_phone": "415-555-0188",
+      "current_employer": "TechCorp",
+      "job_title": "Senior ML Engineer",
+      "applicant_location": "San Francisco, CA, USA",
+      "applied_position": "Lead ML Engineer",
+      "tech_stack": ["Python", "TensorFlow", "PyTorch", "Deep Learning", "NLP", "CV", "MLOps", "Docker"],
+      "work_history": [
+        {
+          "employer": "TechCorp",
+          "role": "Senior ML Engineer",
+          "start_date": "Sep 2022",
+          "end_date": "Present",
+          "description": "Leading NLP team, built transformer-based models for text classification"
+        },
+        {
+          "employer": "AI Research Lab",
+          "role": "ML Research Engineer",
+          "start_date": "Jun 2021",
+          "end_date": "Aug 2022",
+          "description": "Published 3 papers on computer vision and NLP"
+        }
+      ],
+      "education_history": [
+        {
+          "school": "MIT",
+          "degree_type": "Doctor of Philosophy",
+          "major": "Machine Learning",
+          "graduation_year": 2021
+        },
+        {
+          "school": "KAIST",
+          "degree_type": "Bachelor of Science",
+          "major": "Computer Science",
+          "graduation_year": 2016
+        }
+      ],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/evelynpark",
+        "github": "https://github.com/evelynpark"
+      },
+      "years_of_experience": 5
+    }
+  ]
+}

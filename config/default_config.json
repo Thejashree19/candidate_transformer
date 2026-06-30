@@ -1,0 +1,6 @@
+{
+  "fields": [],
+  "include_confidence": true,
+  "include_provenance": true,
+  "on_missing": "null"
+}

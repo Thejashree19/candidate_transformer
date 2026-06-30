@@ -1,0 +1,8 @@
+name,email,phone,current_company,title,location,skills,linkedin_url,github_url,years_experience,education
+Alice Johnson,alice.johnson@email.com,+1-650-555-0101,TechCorp,Senior Software Engineer,"San Francisco, CA",Python;JavaScript;React;Machine Learning;Docker,https://linkedin.com/in/alicejohnson,https://github.com/alicejohnson,8,BS Computer Science from Stanford University
+Bob Chen,bob.chen@techmail.com,(408) 555-0199,DataFlow Inc,Data Engineer,"San Jose, CA",Python;SQL;Apache Spark;AWS;Kafka;ETL,https://linkedin.com/in/bobchen,,6,MS Data Science from UC Berkeley
+Charlie Kumar,charlie.k@gmail.com,+91-98765-43210,InnovateTech,Full Stack Developer,"Bangalore, India",JavaScript;TypeScript;React;Node.js;MongoDB;GraphQL,,,4,"BE Computer Engineering from PES University; MS CS from Georgia Tech"
+Diana Reyes,diana.reyes@outlook.com,555-0142,CloudScale,DevOps Lead,"Austin, TX",Kubernetes;Docker;Terraform;AWS;CI/CD;Python;Linux,https://linkedin.com/in/dianareyes,,10,BS IT from UT Austin
+,,,,,,,,,, 
+InvalidRow,not-an-email,badphone,,,,,,,,
+Evelyn Park,evelyn.park@techcorp.com,+1-415-555-0188,TechCorp,ML Engineer,"San Francisco, CA",Python;TensorFlow;PyTorch;Deep Learning;NLP;Computer Vision,https://linkedin.com/in/evelynpark,https://github.com/evelynpark,5,PhD Machine Learning from MIT

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Transformer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Configuration -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fa-solid fa-bolt"></i> Transformer</h2>
+                <p>Multi-Source Ingestion Engine</p>
+            </div>
+
+            <form id="extractForm">
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-file-csv"></i> Structured Data</h3>
+                    <div class="input-group">
+                        <label for="csv">Recruiter Export (CSV)</label>
+                        <input type="file" id="csv" name="csv" accept=".csv">
+                    </div>
+                    <div class="input-group">
+                        <label for="ats">ATS Export (JSON)</label>
+                        <input type="file" id="ats" name="ats" accept=".json">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-file-pdf"></i> Unstructured Data</h3>
+                    <div class="input-group">
+                        <label for="resumes">Resumes (PDF, DOCX, TXT)</label>
+                        <input type="file" id="resumes" name="resumes" accept=".pdf,.docx,.txt" multiple>
+                    </div>
+                    <div class="input-group">
+                        <label for="notes">Recruiter Notes (TXT)</label>
+                        <input type="file" id="notes" name="notes" accept=".txt">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-globe"></i> Web Profiles</h3>
+                    <div class="input-group">
+                        <label for="github">GitHub Usernames (comma separated)</label>
+                        <input type="text" id="github" name="github" placeholder="e.g. torvalds, thejashree19">
+                    </div>
+                    <div class="input-group">
+                        <label for="linkedin">LinkedIn URLs (comma separated)</label>
+                        <input type="text" id="linkedin" name="linkedin" placeholder="e.g. https://linkedin.com/in/john">
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-primary">
+                    <i class="fa-solid fa-microchip"></i> Run Extraction Pipeline
+                </button>
+            </form>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <header class="content-header">
+                <h1>Canonical Profiles</h1>
+                <div class="meta-stats" id="metaStats">
+                    <span class="stat-badge"><i class="fa-solid fa-users"></i> <span id="totalProfiles">0</span> Profiles</span>
+                </div>
+            </header>
+
+            <div class="results-container" id="resultsContainer">
+                <div class="empty-state">
+                    <div class="pulse-ring"></div>
+                    <i class="fa-solid fa-satellite-dish"></i>
+                    <h2>Awaiting Data Inputs</h2>
+                    <p>Upload files or enter URLs to generate canonical candidate profiles.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Template for a Profile Card -->
+    <template id="profileCardTemplate">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <span class="initials"></span>
+                </div>
+                <div class="profile-title">
+                    <h2 class="candidate-name"></h2>
+                    <p class="candidate-headline"></p>
+                </div>
+                <div class="confidence-badge"></div>
+            </div>
+
+            <div class="profile-body">
+                <div class="info-grid">
+                    <div class="info-item"><i class="fa-solid fa-envelope"></i> <span class="emails-list"></span></div>
+                    <div class="info-item"><i class="fa-solid fa-phone"></i> <span class="phones-list"></span></div>
+                    <div class="info-item"><i class="fa-solid fa-location-dot"></i> <span class="location-text"></span></div>
+                    <div class="info-item"><i class="fa-solid fa-briefcase"></i> <span class="experience-years"></span></div>
+                </div>
+
+                <div class="skills-section">
+                    <h3>Verified Skills</h3>
+                    <div class="skills-container"></div>
+                </div>
+
+                <div class="timeline-section">
+                    <h3>Experience</h3>
+                    <div class="experience-container"></div>
+                </div>
+                
+                <div class="timeline-section">
+                    <h3>Education</h3>
+                    <div class="education-container"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

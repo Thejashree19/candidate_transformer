@@ -9,12 +9,15 @@ A deterministic pipeline that ingests candidate data from multiple sources, norm
 - Merges matching candidates across sources
 - Tracks provenance and confidence
 - Supports a runtime JSON config to reshape output without code changes
+- Provides a beautifully designed web interface for interactive extraction
 
 ## Supported inputs
 
 - Recruiter CSV export
 - ATS JSON blob
-- GitHub profile data via cached JSON
+- GitHub profile data (via URL or Username)
+- LinkedIn profile data (via URL)
+- Resumes (PDF, DOCX, TXT)
 - Recruiter notes text file
 
 ## Requirements
@@ -44,35 +47,39 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-## Run the pipeline
+## Running the Web Interface
+
+For the best experience, start the built-in FastAPI web server and open the UI in your browser:
+
+```bash
+uvicorn app:app --port 8000
+```
+Then navigate to [http://localhost:8000](http://localhost:8000). The web UI allows you to upload resumes, CSVs, and ATS JSONs, and visualize the generated canonical candidate profiles via interactive cards.
+
+## Run the CLI pipeline
 
 The CLI writes JSON to a file when `--output` is provided. If you omit `--output`, the JSON is printed to stdout.
 
-### Default canonical output
+### Run with all default sample data
+
+Use the `--demo` flag to automatically run the pipeline with all included mock sources (ATS, CSV, Resumes, Notes, GitHub, LinkedIn):
 
 ```bash
-python main.py --demo
+python main.py --demo --output sample_outputs/default_output.json
+```
+
+### Run on custom inputs
+
+You can provide paths to specific input sources:
+
+```bash
+python main.py --resume my_custom_resume.pdf --notes interview_notes.txt --output result.json
 ```
 
 ### Custom projected output
-Give the structured and unstructured inputs separately in the CLI command.
-EXAMPLE Command:
-```bash
-python main.py --resume custom_resume.txt --github Thejashree19 --github-cache sample_inputs/github_cache.json --linkedin https://www.linkedin.com/in/thejashree-v-m-284ab3290/ --linkedin-cache sample_inputs/linkedin_cache.json
-```
 
 ```bash
-python main.py --csv sample_inputs/recruiter_export.csv --ats sample_inputs/ats_candidates.json --github-profiles sample_inputs/github_profiles.json --github-cache sample_inputs/github_cache.json --notes sample_inputs/recruiter_notes.txt --config config/custom_config_example.json --output sample_outputs/custom_output.json
-```
-
-```bash
-python main.py --ats custom_ats.json --resume custom_resume.pdf
- ```
-
-### Print JSON to terminal
-
-```bash
-python main.py --csv sample_inputs/recruiter_export.csv --ats sample_inputs/ats_candidates.json --github-profiles sample_inputs/github_profiles.json --github-cache sample_inputs/github_cache.json --notes sample_inputs/recruiter_notes.txt
+python main.py --demo --config config/custom_config_example.json --output sample_outputs/custom_output.json
 ```
 
 ## Example output shape
@@ -134,11 +141,13 @@ python -m pytest -q
 
 ```text
 .
-├── main.py
+├── app.py             # FastAPI backend for the web UI
+├── main.py            # CLI entry point
 ├── config/
 ├── sample_inputs/
 ├── sample_outputs/
 ├── src/
+├── static/            # Web UI frontend assets (HTML/CSS/JS)
 └── tests/
 ```
 

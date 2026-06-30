@@ -117,6 +117,10 @@ class Pipeline:
                 continue
 
             candidates = extractor.safe_extract(envelope)
+            
+            # Clear raw_data to prevent binary data from breaking JSON serialization 
+            # in the FastAPI response (e.g., when a PDF is uploaded).
+            envelope.raw_data = None
             if not candidates and envelope.status == SourceStatus.OK:
                 envelope.status = SourceStatus.EMPTY
                 result.warnings.append(

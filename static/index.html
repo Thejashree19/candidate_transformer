@@ -210,6 +210,7 @@
                 </div>
                 
                 <button type="submit" id="submitBtn">Transform Candidates</button>
+                <button id="downloadBtn" type="button" style="display: none; margin-top: 1rem; background-color: var(--success); color: white;">Download JSON</button>
                 <div id="errorMsg" class="error"></div>
             </form>
         </div>
@@ -223,10 +224,7 @@
             </div>
 
             <div>
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem;">
-                    <h2 style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">JSON Output</h2>
-                    <button id="downloadBtn" type="button" style="width: auto; padding: 0.5rem 1rem; display: none;">Download JSON</button>
-                </div>
+                <h2>JSON Output</h2>
                 <div id="loading" class="loading">Processing files... Please wait.</div>
                 <pre id="jsonOutput">Upload files and click Transform to see the results.</pre>
             </div>

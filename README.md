@@ -1,85 +1,69 @@
 # Multi-Source Candidate Data Transformer
-
-A deterministic pipeline that ingests candidate data from multiple sources, normalizes and merges it into one canonical profile per person, and emits schema-valid JSON with provenance and confidence.
-
+A deterministic pipeline that ingests candidate data from multiple sources, normalizes and merges it into one canonical profile per person, and emits schema-valid JSON with provenance and confidence. Includes both a CLI and a web-based frontend.
 ## What it does
-
 - Ingests structured and unstructured inputs
 - Normalizes phones, dates, locations, and skills
 - Merges matching candidates across sources
 - Tracks provenance and confidence
 - Supports a runtime JSON config to reshape output without code changes
-
+- Provides a beautiful, browser-based UI for uploading files and inspecting results
 ## Supported inputs
-
 - Recruiter CSV export
 - ATS JSON blob
 - Recruiter notes text file
 - Resumes (PDF, DOCX, TXT)
-
 ## Requirements
-
 - Python 3.11+
 - pip
-
 ## Setup
-
 Clone the repository and install dependencies in a virtual environment:
-
 ```bash
 git clone <your-repo-url>
 cd <repo-folder>
 python -m venv .venv
-
 # Windows PowerShell
 .\.venv\Scripts\Activate.ps1
-
 # Windows CMD
 .venv\Scripts\activate.bat
-
 # macOS / Linux
 source .venv/bin/activate
-
 python -m pip install --upgrade pip
 pip install pypdf python-docx
 python -m pip install -r requirements.txt
 ```
-
-## Run the pipeline
-
+## Running the Web Application (Frontend)
+We provide a minimal, modern web UI to easily upload files and view the resulting JSON and confidence scores.
+1. Start the FastAPI server:
+```bash
+python app.py
+```
+2. Open your web browser and navigate to: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+3. Upload your CSV, ATS JSON, Notes, and/or Resume files.
+4. Click "Transform Data" to process the candidates and view the canonical JSON output and confidence score carousel.
+## Running the CLI Pipeline
 The CLI writes JSON to a file when `--output` is provided. If you omit `--output`, the JSON is printed to stdout.
-
 ### Default canonical output
-
 ```bash
 python main.py --demo
 ```
-
 ### Custom projected output
 Give the structured and unstructured inputs separately in the CLI command.
 EXAMPLE Command:
 ```bash
 python main.py --resume custom_resume.txt
 ```
-
 ```bash
 python main.py --csv sample_inputs/recruiter_export.csv --ats sample_inputs/ats_candidates.json --notes sample_inputs/recruiter_notes.txt --config config/custom_config_example.json --output sample_outputs/custom_output.json
 ```
-
 ```bash
 python main.py --ats custom_ats.json --resume custom_resume.pdf
- ```
-
+```
 ### Print JSON to terminal
-
 ```bash
 python main.py --csv sample_inputs/recruiter_export.csv --ats sample_inputs/ats_candidates.json --notes sample_inputs/recruiter_notes.txt
 ```
-
 ## Example output shape
-
 Default output is a JSON object with two top-level keys:
-
 ```json
 {
   "metadata": {
@@ -102,13 +86,9 @@ Default output is a JSON object with two top-level keys:
   ]
 }
 ```
-
 ## Runtime config
-
 Use a config JSON to project the canonical profile into a custom schema.
-
 Example:
-
 ```json
 {
   "fields": [
@@ -122,29 +102,25 @@ Example:
   "on_missing": "null"
 }
 ```
-
 ## Tests
-
 Run the full test suite:
-
 ```bash
 python -m pytest -q
 ```
-
 ## Project structure
-
 ```text
 .
-├── main.py
+├── app.py              # Web application server (FastAPI)
+├── main.py             # CLI entry point
 ├── config/
 ├── sample_inputs/
 ├── sample_outputs/
-├── src/
+├── src/                # Core pipeline logic
+├── static/             # Frontend HTML/CSS/JS
 └── tests/
 ```
-
 ## Notes
-
 - The repo is designed to run the same way on Windows, macOS, and Linux.
 - The sample inputs in `sample_inputs/` are enough to reproduce the bundled outputs.
+- Invalid source values are dropped rather than invented.
 - Invalid source values are dropped rather than invented.

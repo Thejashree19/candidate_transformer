@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Transformer</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .panel {
+            background-color: var(--surface);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel h2 {
+            margin-top: 0;
+            font-size: 1.25rem;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--bg);
+            border: 1px dashed var(--border);
+            border-radius: 0.5rem;
+            color: var(--text);
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        
+        input[type="file"]:hover {
+            border-color: var(--primary);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        button:disabled {
+            background-color: var(--border);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .output-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .confidence-scores {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .score-card {
+            background-color: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .score-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        pre {
+            background-color: var(--bg);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            overflow-x: auto;
+            color: #e2e8f0;
+            font-size: 0.875rem;
+            margin: 0;
+            height: 500px;
+            overflow-y: auto;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: var(--text-muted);
+            padding: 2rem 0;
+        }
+        
+        .error {
+            color: #ef4444;
+            margin-top: 1rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Candidate Transformer</h1>
+
+    <div class="container">
+        <div class="panel">
+            <h2>Input Sources</h2>
+            <form id="transformForm">
+                <div class="form-group">
+                    <label for="csvFile">Recruiter CSV</label>
+                    <input type="file" id="csvFile" name="csv_file" accept=".csv">
+                </div>
+                
+                <div class="form-group">
+                    <label for="atsFile">ATS JSON</label>
+                    <input type="file" id="atsFile" name="ats_file" accept=".json">
+                </div>
+                
+                <div class="form-group">
+                    <label for="notesFile">Recruiter Notes</label>
+                    <input type="file" id="notesFile" name="notes_file" accept=".txt">
+                </div>
+                
+                <div class="form-group">
+                    <label for="resumeFiles">Resumes (PDF, DOCX, TXT)</label>
+                    <input type="file" id="resumeFiles" name="resume_files" multiple accept=".pdf,.docx,.txt">
+                </div>
+                
+                <button type="submit" id="submitBtn">Transform Candidates</button>
+                <div id="errorMsg" class="error"></div>
+            </form>
+        </div>
+
+        <div class="panel output-section">
+            <div id="confidenceSection" style="display: none;">
+                <h2>Confidence Scores</h2>
+                <div class="confidence-scores" id="confidenceScores">
+                    <!-- Score cards will be inserted here -->
+                </div>
+            </div>
+
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                    <h2 style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">JSON Output</h2>
+                    <button id="downloadBtn" type="button" style="width: auto; padding: 0.5rem 1rem; display: none;">Download JSON</button>
+                </div>
+                <div id="loading" class="loading">Processing files... Please wait.</div>
+                <pre id="jsonOutput">Upload files and click Transform to see the results.</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentResult = null;
+        
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            if (!currentResult) return;
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentResult, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "result.json");
+            document.body.appendChild(downloadAnchorNode); // required for firefox
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        });
+
+        document.getElementById('transformForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const jsonOutput = document.getElementById('jsonOutput');
+            const confidenceSection = document.getElementById('confidenceSection');
+            const confidenceScores = document.getElementById('confidenceScores');
+            const errorMsg = document.getElementById('errorMsg');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            const formData = new FormData();
+            
+            const csvFile = document.getElementById('csvFile').files[0];
+            const atsFile = document.getElementById('atsFile').files[0];
+            const notesFile = document.getElementById('notesFile').files[0];
+            const resumeFiles = document.getElementById('resumeFiles').files;
+            
+            if (!csvFile && !atsFile && !notesFile && resumeFiles.length === 0) {
+                errorMsg.textContent = 'Please provide at least one input source.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            if (csvFile) formData.append('csv_file', csvFile);
+            if (atsFile) formData.append('ats_file', atsFile);
+            if (notesFile) formData.append('notes_file', notesFile);
+            
+            for (let i = 0; i < resumeFiles.length; i++) {
+                formData.append('resume_files', resumeFiles[i]);
+            }
+
+            try {
+                submitBtn.disabled = true;
+                errorMsg.style.display = 'none';
+                loading.style.display = 'block';
+                jsonOutput.style.display = 'none';
+                confidenceSection.style.display = 'none';
+                downloadBtn.style.display = 'none';
+
+                const response = await fetch('/api/transform', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                currentResult = result;
+                
+                // Display JSON
+                jsonOutput.textContent = JSON.stringify(result, null, 2);
+                jsonOutput.style.display = 'block';
+                downloadBtn.style.display = 'block';
+                
+                // Display Confidence Scores
+                confidenceScores.innerHTML = '';
+                if (result.profiles && result.profiles.length > 0) {
+                    result.profiles.forEach(profile => {
+                        const score = profile.overall_confidence !== undefined ? 
+                            (profile.overall_confidence * 100).toFixed(0) + '%' : 'N/A';
+                            
+                        const name = profile.full_name || 'Unknown Candidate';
+                        
+                        const card = document.createElement('div');
+                        card.className = 'score-card';
+                        card.innerHTML = `
+                            <div class="score-name" title="${name}">${name}</div>
+                            <div class="score-value">${score}</div>
+                        `;
+                        confidenceScores.appendChild(card);
+                    });
+                    confidenceSection.style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                errorMsg.textContent = 'An error occurred during transformation. Check console for details.';
+                errorMsg.style.display = 'block';
+                jsonOutput.style.display = 'block';
+                jsonOutput.textContent = 'Error processing request.';
+            } finally {
+                submitBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
